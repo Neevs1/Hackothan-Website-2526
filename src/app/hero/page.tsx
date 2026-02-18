@@ -92,7 +92,7 @@ function LogoSpark({ angle, delay, radius }: { angle: number; delay: number; rad
   const ty = Math.sin(rad) * radius;
   return (
     <motion.div
-      className="absolute rounded-full"
+      className="absolute rounded-full logo-spark"
       style={{
         width: 5,
         height: 5,
@@ -121,50 +121,55 @@ function LogoSpark({ angle, delay, radius }: { angle: number; delay: number; rad
 }
 
 /* ─── Rotating energy beam arc around the logo ─── */
-function EnergyBeam({ radius, duration, color, startAngle }: { radius: number; duration: number; color: string; startAngle: number }) {
-  return (
+function EnergyBeam({ radius, duration, color, startAngle, mobileRadius }: {
+  radius: number;
+  duration: number;
+  color: string;
+  startAngle: number;
+  mobileRadius: number;
+}) {
+  // We render two SVGs: one for desktop (hidden on mobile), one for mobile (hidden on desktop)
+  const renderSVG = (r: number, cls: string) => (
     <motion.div
-      className="absolute inset-0 flex items-center justify-center pointer-events-none"
+      className={`absolute inset-0 flex items-center justify-center pointer-events-none ${cls}`}
       animate={{ rotate: 360 }}
       transition={{ duration, repeat: Infinity, ease: 'linear' }}
       style={{ rotate: startAngle }}
     >
       <svg
         className="absolute"
-        width={radius * 2 + 20}
-        height={radius * 2 + 20}
-        viewBox={`0 0 ${radius * 2 + 20} ${radius * 2 + 20}`}
+        width={r * 2 + 20}
+        height={r * 2 + 20}
+        viewBox={`0 0 ${r * 2 + 20} ${r * 2 + 20}`}
         style={{ overflow: 'visible' }}
       >
         <defs>
-          <filter id={`beam-blur-${radius}`}>
+          <filter id={`beam-blur-${r}-${color.slice(5, 10)}`}>
             <feGaussianBlur stdDeviation="3" result="blur" />
           </filter>
         </defs>
-        {/* Main arc */}
         <path
-          d={`M ${radius + 10} 10 A ${radius} ${radius} 0 0 1 ${radius * 2 + 10} ${radius + 10}`}
-          fill="none"
-          stroke={color}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          opacity="0.85"
+          d={`M ${r + 10} 10 A ${r} ${r} 0 0 1 ${r * 2 + 10} ${r + 10}`}
+          fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" opacity="0.85"
         />
-        {/* Blurred glow clone */}
         <path
-          d={`M ${radius + 10} 10 A ${radius} ${radius} 0 0 1 ${radius * 2 + 10} ${radius + 10}`}
-          fill="none"
-          stroke={color}
-          strokeWidth="6"
-          strokeLinecap="round"
-          opacity="0.3"
-          filter={`url(#beam-blur-${radius})`}
+          d={`M ${r + 10} 10 A ${r} ${r} 0 0 1 ${r * 2 + 10} ${r + 10}`}
+          fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" opacity="0.3"
+          filter={`url(#beam-blur-${r}-${color.slice(5, 10)})`}
         />
-        {/* Bright tip dot */}
-        <circle cx={radius + 10} cy={10} r={4} fill={color} opacity="0.9" />
-        <circle cx={radius + 10} cy={10} r={8} fill={color} opacity="0.2" filter={`url(#beam-blur-${radius})`} />
+        <circle cx={r + 10} cy={10} r={4} fill={color} opacity="0.9" />
+        <circle cx={r + 10} cy={10} r={8} fill={color} opacity="0.2" filter={`url(#beam-blur-${r}-${color.slice(5, 10)})`} />
       </svg>
     </motion.div>
+  );
+
+  return (
+    <>
+      {/* Desktop beam — hidden on mobile */}
+      {renderSVG(radius, 'beam-desktop')}
+      {/* Mobile beam — hidden on desktop */}
+      {renderSVG(mobileRadius, 'beam-mobile')}
+    </>
   );
 }
 
@@ -175,26 +180,23 @@ function GlowCorona() {
   const outerColor = useTransform(hue, (h) => `hsla(${h}, 80%, 55%, 0.20)`);
 
   useAnimationFrame((t) => {
-    hue.set(220 + Math.sin(t / 2000) * 40); // cycles between blue-indigo and cyan
+    hue.set(220 + Math.sin(t / 2000) * 40);
   });
 
   return (
     <>
-      {/* Inner tight corona */}
       <motion.div
         className="absolute inset-[-8px] rounded-full pointer-events-none"
         style={{ boxShadow: color }}
         animate={{ scale: [1, 1.04, 1] }}
         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       />
-      {/* Mid bloom */}
       <motion.div
         className="absolute inset-[-24px] rounded-full pointer-events-none blur-xl"
         style={{ background: outerColor }}
         animate={{ scale: [1, 1.08, 1], opacity: [0.5, 0.85, 0.5] }}
         transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
       />
-      {/* Outer far bloom */}
       <motion.div
         className="absolute inset-[-56px] rounded-full pointer-events-none blur-3xl"
         style={{ background: outerColor }}
@@ -328,18 +330,32 @@ export default function HeroSection() {
           animation: shimmer 2.2s linear infinite;
         }
 
-        /* ── FIX 1: Mobile — logo first, then text content below ── */
+        /* ── Mobile: image first, then text ── */
         @media (max-width: 1023px) {
           .hero-grid {
             display: flex !important;
             flex-direction: column !important;
           }
-          .hero-logo-col {
-            order: -1;
-          }
-          .hero-text-col {
-            order: 1;
-          }
+          .hero-logo-col { order: -1; }
+          .hero-text-col { order: 1; }
+        }
+
+        /* ── Mobile orbit radius fixes ── */
+        /* Energy beams: show mobile-sized, hide desktop-sized */
+        .beam-desktop { display: block; }
+        .beam-mobile  { display: none; }
+
+        @media (max-width: 1023px) {
+          .beam-desktop { display: none !important; }
+          .beam-mobile  { display: block !important; }
+
+          /* CSS spinning rings — shrink inset so they stay inside the card */
+          .ring-outer { inset: -10px !important; }
+          .ring-mid   { inset: -20px !important; }
+          .ring-inner { inset: -8px  !important; }
+
+          /* Sparks — hide on mobile so they don't overflow the column */
+          .logo-spark { display: none !important; }
         }
       `}</style>
 
@@ -372,19 +388,10 @@ export default function HeroSection() {
         <div className="absolute bottom-[30%] left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/15 to-transparent" />
 
         {/* ─── Main content ─── */}
-        {/*
-          FIX 2: Added top padding so content clears the navbar.
-          - pt-28 on mobile (taller effective navbar area on small screens)
-          - sm:pt-32 on small breakpoint
-          - lg:pt-24 on desktop (less needed since content is vertically centered and taller)
-          pb-20 retained from original py-20 (which applied to both top & bottom).
-        */}
         <div className="relative z-10 container mx-auto px-6 lg:px-12 pt-28 sm:pt-32 lg:pt-24 pb-20">
-
-          {/* hero-grid: flex-column on mobile (logo first via order), lg:grid on desktop */}
           <div className="hero-grid grid lg:grid-cols-2 gap-16 items-center">
 
-            {/* ══ LEFT CONTENT — hero-text-col: order:1 on mobile so it appears below the logo ══ */}
+            {/* ══ LEFT CONTENT ══ */}
             <div className="hero-text-col space-y-8">
 
               {/* Badge */}
@@ -397,48 +404,34 @@ export default function HeroSection() {
               </div>
 
               {/* Title */}
-              <div
-                className={`slide-up ${mounted ? '' : 'opacity-0'}`}
-                style={{ animationDelay: '0.2s' }}
-              >
+              <div className={`slide-up ${mounted ? '' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-none tracking-tighter text-white" style={{ fontFamily: "'Trebuchet MS', sans-serif" }}>
                   Ignition
                   <br />
                   <span className="shimmer-text animate-shimmer">HackVerse</span>
                   <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
-                    2026
-                  </span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">2026</span>
                 </h1>
               </div>
 
               {/* Typewriter subheading */}
-              <div
-                className={`text-xl sm:text-2xl font-semibold text-gray-200 slide-up ${mounted ? '' : 'opacity-0'}`}
-                style={{ animationDelay: '0.35s' }}
-              >
+              <div className={`text-xl sm:text-2xl font-semibold text-gray-200 slide-up ${mounted ? '' : 'opacity-0'}`} style={{ animationDelay: '0.35s' }}>
                 Where developers{' '}
                 <Typewriter words={['build the future.', 'ignite ideas.', 'ship in 24hrs.', 'change the world.']} />
               </div>
 
               {/* Description */}
-              <p
-                className={`text-base sm:text-lg text-gray-400 max-w-md leading-relaxed slide-up ${mounted ? '' : 'opacity-0'}`}
-                style={{ animationDelay: '0.5s' }}
-              >
+              <p className={`text-base sm:text-lg text-gray-400 max-w-md leading-relaxed slide-up ${mounted ? '' : 'opacity-0'}`} style={{ animationDelay: '0.5s' }}>
                 A 24-hour coding marathon where ideas ignite, innovation thrives,
                 and developers collaborate to build solutions that matter.
               </p>
 
               {/* Stats row */}
-              <div
-                className={`flex gap-8 slide-up ${mounted ? '' : 'opacity-0'}`}
-                style={{ animationDelay: '0.6s' }}
-              >
+              <div className={`flex gap-8 slide-up ${mounted ? '' : 'opacity-0'}`} style={{ animationDelay: '0.6s' }}>
                 {[
                   { value: 500, suffix: '+', label: 'Hackers' },
-                  { value: 50, suffix: 'k+', label: 'Prize Pool' },
-                  { value: 24, suffix: 'h', label: 'Hackathon' },
+                  { value: 50,  suffix: 'k+', label: 'Prize Pool' },
+                  { value: 24,  suffix: 'h',  label: 'Hackathon' },
                 ].map(({ value, suffix, label }) => (
                   <div key={label} className="text-center">
                     <div className="text-2xl font-extrabold text-white">
@@ -450,10 +443,7 @@ export default function HeroSection() {
               </div>
 
               {/* CTA Buttons */}
-              <div
-                className={`flex flex-col sm:flex-row gap-4 pt-2 slide-up ${mounted ? '' : 'opacity-0'}`}
-                style={{ animationDelay: '0.75s' }}
-              >
+              <div className={`flex flex-col sm:flex-row gap-4 pt-2 slide-up ${mounted ? '' : 'opacity-0'}`} style={{ animationDelay: '0.75s' }}>
                 <button className="btn-primary group relative px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold text-base shadow-[0_0_30px_rgba(99,102,241,0.35)] hover:shadow-[0_0_50px_rgba(99,102,241,0.55)] hover:scale-[1.04] active:scale-[0.98] transition-all duration-300">
                   <span className="relative z-10 flex items-center gap-2">
                     Register Now
@@ -462,7 +452,6 @@ export default function HeroSection() {
                     </svg>
                   </span>
                 </button>
-
                 <button className="group px-8 py-3.5 rounded-xl border border-white/15 backdrop-blur-md bg-white/5 text-white font-bold text-base hover:bg-white/10 hover:border-white/30 hover:scale-[1.04] active:scale-[0.98] transition-all duration-300 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
                   View Prizes
@@ -470,29 +459,39 @@ export default function HeroSection() {
               </div>
             </div>
 
-            {/* ══ RIGHT — MOTION-ENHANCED LOGO — hero-logo-col: order:-1 on mobile so it appears first ══ */}
+            {/* ══ RIGHT — LOGO ══ */}
             <motion.div
               className="hero-logo-col relative flex justify-center lg:justify-end"
               initial={{ opacity: 0, x: 48 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.85, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="relative w-full max-w-[500px]">
+              {/*
+                MOBILE ORBIT FIX:
+                max-w is constrained to prevent overflow on narrow screens.
+                The logo wrapper clips overflow so rings/beams can't bleed outside.
+              */}
+              <div className="relative w-full max-w-[500px] lg:max-w-[500px] max-w-[280px] sm:max-w-[360px]">
 
-                {/* ── Energy beam arcs (Framer Motion) ── */}
-                <EnergyBeam radius={280} duration={7}  color="rgba(99,102,241,0.75)"  startAngle={0}   />
-                <EnergyBeam radius={300} duration={11} color="rgba(56,189,248,0.60)"  startAngle={120} />
-                <EnergyBeam radius={260} duration={9}  color="rgba(167,139,250,0.65)" startAngle={240} />
+                {/* ── Energy beams: each renders a desktop + mobile sized version ── */}
+                {/*
+                  Desktop radii: 280 / 300 / 260
+                  Mobile radii:  110 / 120 / 100   (≈40% of desktop, fits inside a 280px card)
+                */}
+                <EnergyBeam radius={280} mobileRadius={110} duration={7}  color="rgba(99,102,241,0.75)"  startAngle={0}   />
+                <EnergyBeam radius={300} mobileRadius={120} duration={11} color="rgba(56,189,248,0.60)"  startAngle={120} />
+                <EnergyBeam radius={260} mobileRadius={100} duration={9}  color="rgba(167,139,250,0.65)" startAngle={240} />
 
-                {/* ── CSS spinning rings (kept for layered depth) ── */}
-                <div className="absolute inset-[-32px] rounded-full border border-indigo-500/15 animate-ring-spin" />
-                <div className="absolute inset-[-64px] rounded-full border border-blue-500/10 animate-ring-rev" />
+                {/* ── CSS spinning rings ── */}
+                {/* ring-outer / ring-mid / ring-inner classes let mobile CSS override inset */}
+                <div className="ring-outer absolute inset-[-32px] rounded-full border border-indigo-500/15 animate-ring-spin" />
+                <div className="ring-mid absolute inset-[-64px] rounded-full border border-blue-500/10 animate-ring-rev" />
                 <div
-                  className="absolute inset-[-20px] rounded-full animate-ring-spin"
+                  className="ring-inner absolute inset-[-20px] rounded-full animate-ring-spin"
                   style={{ border: '1px dashed rgba(99,102,241,0.18)', animationDuration: '24s' }}
                 />
 
-                {/* ── Orbit dots (motion) ── */}
+                {/* ── Orbit dots ── */}
                 {[
                   { deg: 0,   color: '#60a5fa', size: 10 },
                   { deg: 90,  color: '#818cf8', size: 7  },
@@ -501,7 +500,7 @@ export default function HeroSection() {
                 ].map(({ deg, color, size }, i) => (
                   <motion.div
                     key={i}
-                    className="absolute rounded-full"
+                    className="absolute rounded-full orbit-dot"
                     style={{
                       width: size,
                       height: size,
@@ -520,26 +519,26 @@ export default function HeroSection() {
                       opacity: [0.7, 1, 0.7],
                     }}
                     transition={{
-                      rotate: { duration: 12, repeat: Infinity, ease: 'linear' },
-                      scale:  { duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.6 },
-                      opacity:{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.6 },
+                      rotate:  { duration: 12, repeat: Infinity, ease: 'linear' },
+                      scale:   { duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.6 },
+                      opacity: { duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.6 },
                     }}
                   />
                 ))}
 
-                {/* ── Sparks flying outward ── */}
+                {/* ── Sparks (hidden on mobile via .logo-spark CSS) ── */}
                 {SPARK_ANGLES.map((s, i) => (
                   <LogoSpark key={i} angle={s.angle} delay={s.delay} radius={s.radius} />
                 ))}
 
-                {/* ── Color-cycling glow corona (Framer Motion) ── */}
+                {/* ── Glow corona ── */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="relative w-full h-full">
                     <GlowCorona />
                   </div>
                 </div>
 
-                {/* ── Logo with float ── */}
+                {/* ── Logo ── */}
                 <div className="relative z-10">
                   <LogoFloat>
                     <div className="relative">
@@ -555,7 +554,7 @@ export default function HeroSection() {
                   </LogoFloat>
                 </div>
 
-                {/* ── Floating info badge — top right (motion) ── */}
+                {/* ── Floating badge — top right ── */}
                 <motion.div
                   className="absolute top-4 right-[-16px] z-20 px-3 py-2 rounded-xl bg-[#0e1630]/80 border border-indigo-500/30 backdrop-blur-md shadow-xl"
                   initial={{ opacity: 0, scale: 0.75, x: 12 }}
@@ -572,7 +571,7 @@ export default function HeroSection() {
                   </div>
                 </motion.div>
 
-                {/* ── Floating info badge — bottom left (motion) ── */}
+                {/* ── Floating badge — bottom left ── */}
                 <motion.div
                   className="absolute bottom-8 left-[-16px] z-20 px-3 py-2 rounded-xl bg-[#0e1630]/80 border border-blue-500/30 backdrop-blur-md shadow-xl"
                   initial={{ opacity: 0, scale: 0.75, x: -12 }}
@@ -589,7 +588,7 @@ export default function HeroSection() {
                   </div>
                 </motion.div>
 
-                {/* ── Live badge (motion) ── */}
+                {/* ── Live badge ── */}
                 <motion.div
                   className="absolute top-[-8px] left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/40"
                   initial={{ opacity: 0, y: -10, scale: 0.8 }}

@@ -2,405 +2,343 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const TOTAL = 180000;
-
-const TRACK_COLORS = [
-  { color: '#6366f1', soft: 'rgba(99,102,241,',  label: 'Track I'   },
-  { color: '#38bdf8', soft: 'rgba(56,189,248,',   label: 'Track II'  },
-  { color: '#a78bfa', soft: 'rgba(167,139,250,',  label: 'Track III' },
-  { color: '#34d399', soft: 'rgba(52,211,153,',   label: 'Track IV'  },
+const timelineEvents = [
+  { date: "March 22, 2025", time: "8:30 AM", title: "Team Reporting", description: "Team check-in and setting up workstations", icon: "🏁", tag: "Day 1" },
+  { date: "March 22, 2025", time: "10:00 AM", title: "Hackathon Begins", description: "Inauguration & 24-hour Hackathon starts", icon: "⚡", tag: "Day 1" },
+  { date: "March 22, 2025", time: "12:00 PM", title: "Lunch Break", description: "Lunch will be provided", icon: "🍽️", tag: "Day 1" },
+  { date: "March 22, 2025", time: "2:30 PM", title: "Mentor Talk", description: "Get guidance from industry experts", icon: "🎙️", tag: "Day 1" },
+  { date: "March 22, 2025", time: "4:00 PM", title: "Tea Break", description: "A short break for relaxation", icon: "☕", tag: "Day 1" },
+  { date: "March 22, 2025", time: "7:00 PM", title: "Dinner & Recreational Activities", description: "Have a networking dinner", icon: "🌙", tag: "Day 1" },
+  { date: "March 23, 2025", time: "1:00 AM", title: "Tea Break", description: "Another short break for relaxation", icon: "🌃", tag: "Day 2" },
+  { date: "March 23, 2025", time: "8:00 AM – 10:00 AM", title: "Final Touches & Breakfast", description: "Last minute adjustments before judging round", icon: "🍳", tag: "Day 2" },
+  { date: "March 23, 2025", time: "10:00 AM – 11:30 AM", title: "First Evaluation Round", description: "First Assessment Round of Teams", icon: "📊", tag: "Day 2" },
+  { date: "March 23, 2025", time: "11:45 AM", title: "Result Declaration – Round 1", description: "Announcement of round 1 selected teams", icon: "📣", tag: "Day 2" },
+  { date: "March 23, 2025", time: "11:45 – 12:00 PM", title: "Certificate & Goodies Distribution", description: "For eliminated teams, certificates and goodies will be distributed.", icon: "🎖️", tag: "Day 2" },
+  { date: "March 23, 2025", time: "12:00 – 12:30 PM", title: "Lunch", description: "Lunch for teams selected for final round", icon: "🥗", tag: "Day 2" },
+  { date: "March 23, 2025", time: "12:30 – 2:00 PM", title: "Final Evaluation Round", description: "Participant presentations and judgment assessments.", icon: "🏆", tag: "Day 2" },
+  { date: "March 23, 2025", time: "2:15 – 3:30 PM", title: "Prize Distribution", description: "Recognition and awarding of winners.", icon: "🥇", tag: "Day 2" },
 ];
 
-const PRIZE_TIERS = [
-  { rank: '1st', amount: 25000, icon: '🥇', heightPct: 100 },
-  { rank: '2nd', amount: 15000, icon: '🥈', heightPct: 68  },
-  { rank: '3rd', amount: 10000, icon: '🥉', heightPct: 46  },
-];
-
-function useInView(threshold = 0.12) {
+// ── FIX 1: No explicit return type annotation — TypeScript infers it safely.
+// ── FIX 2: Return `as const` so destructuring gives a typed [Ref, boolean] tuple
+//           instead of the wider (Ref | boolean)[] union type.
+function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
-    const io = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setInView(true); io.disconnect(); } },
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
       { threshold }
     );
-    if (ref.current) io.observe(ref.current);
-    return () => io.disconnect();
-  }, []);
+    // ── FIX 3: Guard with `ref.current` before observing (already present, kept)
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [threshold]);
+
   return [ref, inView] as const;
 }
 
-function useCounter(target: number, active: boolean, duration = 2200) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!active) return;
-    let cur = 0;
-    const step = target / (duration / 16);
-    const t = setInterval(() => {
-      cur += step;
-      if (cur >= target) { setVal(target); clearInterval(t); }
-      else setVal(Math.floor(cur));
-    }, 16);
-    return () => clearInterval(t);
-  }, [active, target, duration]);
-  return val;
-}
-
-/* ── Single track vault card ── */
-function TrackVault({ track, index, active }: {
-  track: typeof TRACK_COLORS[0];
-  index: number;
-  active: boolean;
-}) {
-  const [hovered, setHovered] = useState(false);
+function TimelineItem({ event, index }: { event: typeof timelineEvents[0]; index: number }) {
+  const isLeft = index % 2 === 0;
   const [ref, inView] = useInView();
-  const { color, soft, label } = track;
-
-  // Podium order: 2nd | 1st | 3rd
-  const podiumOrder = [PRIZE_TIERS[1], PRIZE_TIERS[0], PRIZE_TIERS[2]];
-  const podiumHeights = [PRIZE_TIERS[1].heightPct, PRIZE_TIERS[0].heightPct, PRIZE_TIERS[2].heightPct];
-  const podiumDelays = [120, 0, 240];
+  const isDay2Start = event.tag === "Day 2" && (index === 0 || timelineEvents[index - 1].tag !== "Day 2");
 
   return (
+    <>
+      {isDay2Start && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          zIndex: 10,
+          margin: '48px 0 32px',
+          gap: '16px',
+        }}>
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(56,189,248,0.4))' }} />
+          <div style={{
+            padding: '6px 20px',
+            borderRadius: '999px',
+            background: 'rgba(56,189,248,0.1)',
+            border: '1px solid rgba(56,189,248,0.4)',
+            color: '#38bdf8',
+            fontSize: '11px',
+            fontWeight: 700,
+            letterSpacing: '3px',
+            textTransform: 'uppercase' as const,
+            fontFamily: "'Trebuchet MS', sans-serif",
+          }}>March 23 · Day 2</div>
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(56,189,248,0.4))' }} />
+        </div>
+      )}
+
+      <div
+        ref={ref}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 60px 1fr',
+          alignItems: 'start',
+          marginBottom: '28px',
+          opacity: inView ? 1 : 0,
+          transform: inView
+            ? 'translateX(0)'
+            : isLeft ? 'translateX(-40px)' : 'translateX(40px)',
+          transition: `opacity 0.6s cubic-bezier(.22,1,.36,1) ${index * 60}ms, transform 0.6s cubic-bezier(.22,1,.36,1) ${index * 60}ms`,
+        }}
+      >
+        {/* Content — left or right depending on index */}
+        <div style={{ gridColumn: isLeft ? '1' : '3', gridRow: 1, display: 'flex', justifyContent: isLeft ? 'flex-end' : 'flex-start' }}>
+          <Card event={event} isLeft={isLeft} />
+        </div>
+
+        {/* Center node */}
+        <div style={{
+          gridColumn: 2,
+          gridRow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          paddingTop: '18px',
+          position: 'relative',
+          zIndex: 2,
+        }}>
+          <div style={{
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #6366f1, #38bdf8)',
+            border: '3px solid #060c1a',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '18px',
+            boxShadow: '0 0 0 4px rgba(99,102,241,0.25), 0 0 24px rgba(99,102,241,0.4)',
+            flexShrink: 0,
+            transition: 'box-shadow 0.3s',
+          }}>
+            {event.icon}
+          </div>
+        </div>
+
+        {/* Empty opposite side */}
+        <div style={{ gridColumn: isLeft ? '3' : '1', gridRow: 1 }} />
+      </div>
+    </>
+  );
+}
+
+function Card({ event, isLeft }: { event: typeof timelineEvents[0]; isLeft: boolean }) {
+  const [hovered, setHovered] = useState(false);
+  return (
     <div
-      ref={ref}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        opacity: inView ? 1 : 0,
-        transform: inView
-          ? (hovered ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)')
-          : 'translateY(40px) scale(0.96)',
-        transition: `opacity 0.6s cubic-bezier(.22,1,.36,1) ${index * 110}ms,
-                     transform 0.5s cubic-bezier(.22,1,.36,1)`,
-        background: hovered
-          ? `linear-gradient(155deg, ${soft}0.16) 0%, ${soft}0.06) 60%, rgba(255,255,255,0.02) 100%)`
-          : `linear-gradient(155deg, ${soft}0.08) 0%, rgba(255,255,255,0.02) 100%)`,
-        border: `1px solid ${hovered ? `${soft}0.5)` : `${soft}0.2)`}`,
-        borderRadius: '22px',
-        backdropFilter: 'blur(14px)',
+        maxWidth: '340px',
+        width: '100%',
+        padding: '18px 22px',
+        borderRadius: '16px',
+        background: hovered ? 'rgba(99,102,241,0.12)' : 'rgba(255,255,255,0.04)',
+        border: hovered ? '1px solid rgba(99,102,241,0.45)' : '1px solid rgba(255,255,255,0.08)',
+        backdropFilter: 'blur(12px)',
         boxShadow: hovered
-          ? `0 24px 64px ${soft}0.22), 0 0 0 1px ${soft}0.08), inset 0 1px 0 rgba(255,255,255,0.1)`
-          : `inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 24px rgba(0,0,0,0.3)`,
+          ? '0 8px 40px rgba(99,102,241,0.25), inset 0 1px 0 rgba(255,255,255,0.08)'
+          : '0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)',
+        transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
+        transition: 'all 0.3s cubic-bezier(.22,1,.36,1)',
+        cursor: 'default',
+        textAlign: isLeft ? 'right' : 'left',
         position: 'relative',
         overflow: 'hidden',
-        cursor: 'default',
-        padding: '22px 18px 20px',
       }}
     >
-      {/* Top glow line */}
+      {/* Shimmer line on hover */}
       <div style={{
-        position: 'absolute', top: 0, left: '15%', right: '15%', height: '2px',
-        background: `linear-gradient(90deg, transparent, ${color}, transparent)`,
-        opacity: hovered ? 1 : 0.35,
-        transition: 'opacity 0.4s',
-        borderRadius: '999px',
+        position: 'absolute', top: 0, left: 0, right: 0, height: '1px',
+        background: hovered
+          ? 'linear-gradient(90deg, transparent, rgba(99,102,241,0.8), rgba(56,189,248,0.8), transparent)'
+          : 'transparent',
+        transition: 'background 0.3s',
       }} />
 
-      {/* Radial corner bloom */}
+      {/* Time pill */}
       <div style={{
-        position: 'absolute', top: '-20px', right: '-20px',
-        width: '120px', height: '120px',
-        background: `radial-gradient(circle, ${soft}0.18) 0%, transparent 70%)`,
-        pointerEvents: 'none',
-        transition: 'opacity 0.4s',
-        opacity: hovered ? 1 : 0.5,
-      }} />
-
-      {/* Track label + total */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
-        <div style={{
-          padding: '4px 12px', borderRadius: '999px',
-          background: `${soft}0.12)`,
-          border: `1px solid ${soft}0.28)`,
-          color: color,
-          fontSize: '10px', fontWeight: 800, letterSpacing: '2.5px',
-          textTransform: 'uppercase', fontFamily: "'Trebuchet MS',sans-serif",
-        }}>{label}</div>
-
-        <div style={{ textAlign: 'right' }}>
-          <div style={{
-            color: color, fontSize: '20px', fontWeight: 900,
-            fontFamily: "'Trebuchet MS',sans-serif", lineHeight: 1,
-            textShadow: hovered ? `0 0 20px ${soft}0.6)` : 'none',
-            transition: 'text-shadow 0.3s',
-          }}>₹45K</div>
-          <div style={{ color: '#334155', fontSize: '8px', fontWeight: 700, letterSpacing: '1.5px', fontFamily: "'Trebuchet MS',sans-serif" }}>
-            PER TRACK
-          </div>
-        </div>
-      </div>
-
-      {/* ── Podium bars ── */}
-      <div style={{
-        display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-        gap: '6px', height: '108px', marginBottom: '14px',
+        display: 'inline-flex', alignItems: 'center', gap: '6px',
+        padding: '3px 10px', borderRadius: '999px',
+        background: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.25)',
+        marginBottom: '10px',
       }}>
-        {podiumOrder.map((tier, pi) => {
-          const isFirst = tier.rank === '1st';
-          const h = podiumHeights[pi];
-          return (
-            <div key={pi} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
-              {/* Amount above bar */}
-              <div style={{
-                fontSize: isFirst ? '10px' : '9px',
-                fontWeight: 800, color: isFirst ? color : `${soft}0.55)`,
-                fontFamily: "'Trebuchet MS',sans-serif",
-                whiteSpace: 'nowrap',
-                opacity: (active && inView) ? 1 : 0,
-                transform: (active && inView) ? 'translateY(0)' : 'translateY(6px)',
-                transition: `opacity 0.5s ease ${podiumDelays[pi] + 500}ms, transform 0.5s ease ${podiumDelays[pi] + 500}ms`,
-              }}>
-                ₹{tier.amount / 1000}K
-              </div>
-              {/* Emoji */}
-              <div style={{
-                fontSize: isFirst ? '14px' : '11px',
-                opacity: (active && inView) ? 1 : 0,
-                transition: `opacity 0.4s ease ${podiumDelays[pi] + 400}ms`,
-              }}>{tier.icon}</div>
-              {/* Bar */}
-              <div style={{
-                width: '100%', borderRadius: '5px 5px 2px 2px',
-                height: (active && inView) ? `${h}%` : '0%',
-                minHeight: (active && inView) ? `${Math.round(h * 1.08)}px` : '0px',
-                background: isFirst
-                  ? `linear-gradient(to top, ${color} 0%, ${soft}0.55) 100%)`
-                  : `linear-gradient(to top, ${soft}0.4) 0%, ${soft}0.15) 100%)`,
-                border: `1px solid ${isFirst ? `${soft}0.7)` : `${soft}0.25)`}`,
-                boxShadow: isFirst ? `0 0 20px ${soft}0.45), inset 0 1px 0 rgba(255,255,255,0.2)` : 'none',
-                transition: `min-height 0.75s cubic-bezier(.22,1,.36,1) ${podiumDelays[pi]}ms`,
-                position: 'relative', overflow: 'hidden',
-              }}>
-                {isFirst && (
-                  <div style={{
-                    position: 'absolute', inset: 0,
-                    background: 'linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 55%)',
-                    borderRadius: 'inherit',
-                  }} />
-                )}
-              </div>
-              {/* Rank */}
-              <div style={{
-                fontSize: '8px', fontWeight: 800, letterSpacing: '1px',
-                color: `${soft}0.5)`, fontFamily: "'Trebuchet MS',sans-serif",
-              }}>{tier.rank}</div>
-            </div>
-          );
-        })}
+        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#38bdf8', display: 'inline-block', flexShrink: 0 }} />
+        <span style={{ color: '#38bdf8', fontSize: '11px', fontWeight: 600, letterSpacing: '0.5px', fontFamily: "'Trebuchet MS', sans-serif", whiteSpace: 'nowrap' }}>
+          {event.time}
+        </span>
       </div>
 
-      {/* Separator */}
-      <div style={{ height: '1px', background: `linear-gradient(90deg, transparent, ${soft}0.25), transparent)`, marginBottom: '12px' }} />
+      {/* Title */}
+      <h3 style={{
+        color: '#fff', fontSize: '16px', fontWeight: 700, margin: '0 0 6px',
+        fontFamily: "'Trebuchet MS', sans-serif", lineHeight: 1.3,
+        background: hovered ? 'linear-gradient(90deg, #93c5fd, #a5b4fc)' : 'none',
+        WebkitBackgroundClip: hovered ? 'text' : 'unset',
+        WebkitTextFillColor: hovered ? 'transparent' : 'white',
+        backgroundClip: hovered ? 'text' : 'unset',
+        transition: 'all 0.3s',
+      }}>
+        {event.title}
+      </h3>
 
-      {/* Prize row list */}
-      {PRIZE_TIERS.map((tier, ti) => (
-        <div key={ti} style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '5px 8px', borderRadius: '7px', marginBottom: ti < 2 ? '4px' : 0,
-          background: ti === 0 ? `${soft}0.1)` : 'transparent',
-          border: ti === 0 ? `1px solid ${soft}0.18)` : '1px solid transparent',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '11px' }}>{tier.icon}</span>
-            <span style={{
-              fontSize: '11px', fontWeight: 700, fontFamily: "'Trebuchet MS',sans-serif",
-              color: ti === 0 ? '#e2e8f0' : '#475569',
-            }}>{tier.rank} Place</span>
-          </div>
-          <span style={{
-            fontSize: '12px', fontWeight: 800, fontFamily: "'Trebuchet MS',sans-serif",
-            color: ti === 0 ? color : '#374151',
-          }}>₹{tier.amount.toLocaleString('en-IN')}</span>
-        </div>
-      ))}
+      {/* Description */}
+      <p style={{
+        color: '#94a3b8', fontSize: '13px', margin: 0, lineHeight: 1.6,
+        fontFamily: "'Trebuchet MS', sans-serif",
+      }}>
+        {event.description}
+      </p>
     </div>
   );
 }
 
-/* ── Main ── */
-export default function PrizePool() {
-  const [secRef, secInView] = useInView(0.05);
-  const total = useCounter(TOTAL, secInView, 2400);
-
+export default function Timeline() {
   return (
     <>
       <style>{`
-        @keyframes grid-scroll { 0%{transform:translateY(0)} 100%{transform:translateY(60px)} }
-        @keyframes orb-drift   { 0%,100%{transform:translate(0,0) scale(1);opacity:.14;} 50%{transform:translate(24px,-18px) scale(1.07);opacity:.22;} }
-        @keyframes reveal-up   { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
-        @keyframes chip-float  { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
-        @keyframes pulse-dot   { 0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.65);} 70%{box-shadow:0 0 0 9px rgba(99,102,241,0);} }
-        @keyframes total-glow  { 0%,100%{text-shadow:0 0 40px rgba(99,102,241,0.35);} 50%{text-shadow:0 0 80px rgba(99,102,241,0.65),0 0 120px rgba(56,189,248,0.25);} }
-        @keyframes shimmer-sweep { 0%{background-position:-200% center;} 100%{background-position:200% center;} }
-        @keyframes float-badge { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
-
-        .total-num { animation: total-glow 3s ease-in-out infinite; }
-
-        .tracks-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 14px;
+        @keyframes line-grow {
+          from { height: 0; }
+          to   { height: 100%; }
         }
-        @media (max-width: 1080px) {
-          .tracks-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        @keyframes title-reveal {
+          from { opacity: 0; transform: translateY(24px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
-        @media (max-width: 540px) {
-          .tracks-grid { grid-template-columns: 1fr; gap: 12px; }
+        @keyframes pulse-ring {
+          0%   { box-shadow: 0 0 0 0 rgba(99,102,241,0.5); }
+          70%  { box-shadow: 0 0 0 10px rgba(99,102,241,0); }
+          100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+        }
+        @keyframes orb-drift {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.18; }
+          50%       { transform: translate(30px, -20px) scale(1.08); opacity: 0.28; }
+        }
+        @keyframes grid-scroll {
+          0%   { transform: translateY(0); }
+          100% { transform: translateY(60px); }
+        }
+        @keyframes float-chip {
+          0%, 100% { transform: translateY(0px); }
+          50%       { transform: translateY(-8px); }
+        }
+        .tl-line-inner {
+          animation: line-grow 1.5s cubic-bezier(.22,1,.36,1) 0.3s both;
+        }
+        .day-chip {
+          animation: float-chip 4s ease-in-out infinite;
         }
 
-        /* Equal prizes strip */
-        .equal-strip {
-          display: flex;
-          gap: 8px;
-          justify-content: center;
-          flex-wrap: wrap;
-          margin-top: 14px;
+        @media (max-width: 700px) {
+          .tl-item-grid {
+            grid-template-columns: 40px 1fr !important;
+          }
+          .tl-empty-col { display: none !important; }
+          .tl-content-left  { grid-column: 2 !important; grid-row: 1 !important; justify-content: flex-start !important; }
+          .tl-content-right { grid-column: 2 !important; grid-row: 1 !important; }
+          .tl-node-col { grid-column: 1 !important; }
         }
       `}</style>
 
-      <section
-        ref={secRef}
-        id="prizes"
-        style={{
-          background: 'linear-gradient(180deg,#060c1a 0%,#080f20 55%,#060c1a 100%)',
-          position: 'relative', padding: '88px 0 104px', overflow: 'hidden',
-        }}
-      >
-        {/* BG grid */}
-        <div style={{ position:'absolute',inset:0,opacity:0.04,pointerEvents:'none' }}>
+      <section style={{
+        background: 'linear-gradient(180deg, #060c1a 0%, #0a1228 50%, #060c1a 100%)',
+        position: 'relative',
+        padding: '100px 0 120px',
+        overflow: 'hidden',
+      }}>
+        {/* Background grid */}
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.05, pointerEvents: 'none' }}>
           <div style={{
-            position:'absolute',inset:0,
-            backgroundImage:`linear-gradient(rgba(99,102,241,0.6) 1px,transparent 1px),
-                             linear-gradient(90deg,rgba(99,102,241,0.6) 1px,transparent 1px)`,
-            backgroundSize:'60px 60px',
-            animation:'grid-scroll 12s linear infinite',
-          }}/>
+            position: 'absolute', inset: 0,
+            backgroundImage: `linear-gradient(rgba(99,102,241,0.5) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(99,102,241,0.5) 1px, transparent 1px)`,
+            backgroundSize: '60px 60px',
+            animation: 'grid-scroll 10s linear infinite',
+          }} />
         </div>
 
         {/* Orbs */}
-        <div style={{position:'absolute',top:'-120px',right:'-120px',width:'520px',height:'520px',background:'radial-gradient(circle,rgba(99,102,241,0.16) 0%,transparent 70%)',borderRadius:'50%',animation:'orb-drift 9s ease-in-out infinite',pointerEvents:'none'}}/>
-        <div style={{position:'absolute',bottom:'-120px',left:'-120px',width:'480px',height:'480px',background:'radial-gradient(circle,rgba(56,189,248,0.12) 0%,transparent 70%)',borderRadius:'50%',animation:'orb-drift 11s ease-in-out infinite reverse',pointerEvents:'none'}}/>
-        <div style={{position:'absolute',top:'35%',left:'50%',transform:'translate(-50%,-50%)',width:'700px',height:'300px',background:'radial-gradient(ellipse,rgba(99,102,241,0.05) 0%,transparent 70%)',pointerEvents:'none'}}/>
+        <div style={{ position: 'absolute', top: '-100px', right: '-150px', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%)', borderRadius: '50%', animation: 'orb-drift 8s ease-in-out infinite', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: '-100px', left: '-150px', width: '450px', height: '450px', background: 'radial-gradient(circle, rgba(56,189,248,0.14) 0%, transparent 70%)', borderRadius: '50%', animation: 'orb-drift 10s ease-in-out infinite reverse', pointerEvents: 'none' }} />
 
-        <div style={{ maxWidth:'1160px', margin:'0 auto', padding:'0 20px', position:'relative', zIndex:1 }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
 
-          {/* ── Header ── */}
-          <div style={{ textAlign:'center', marginBottom:'52px', animation:'reveal-up 0.8s ease both' }}>
-
-            {/* Badge chip */}
-            <div style={{
-              display:'inline-flex', alignItems:'center', gap:'8px',
-              padding:'5px 16px', borderRadius:'999px',
-              background:'rgba(99,102,241,0.1)', border:'1px solid rgba(99,102,241,0.3)',
-              marginBottom:'22px', animation:'chip-float 4s ease-in-out infinite',
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: '72px' }}>
+            <div className="day-chip" style={{
+              display: 'inline-flex', alignItems: 'center', gap: '8px',
+              padding: '6px 18px', borderRadius: '999px',
+              background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.35)',
+              marginBottom: '24px',
             }}>
-              <span style={{width:'6px',height:'6px',borderRadius:'50%',background:'#818cf8',display:'inline-block',boxShadow:'0 0 8px #818cf8',animation:'pulse-dot 2s infinite'}}/>
-              <span style={{color:'#a5b4fc',fontSize:'11px',fontWeight:700,letterSpacing:'3px',textTransform:'uppercase',fontFamily:"'Trebuchet MS',sans-serif"}}>4 Tracks · ₹45,000 Each</span>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#818cf8', display: 'inline-block', animation: 'pulse-ring 2s infinite' }} />
+              <span style={{ color: '#a5b4fc', fontSize: '12px', fontWeight: 600, letterSpacing: '3px', textTransform: 'uppercase', fontFamily: "'Trebuchet MS', sans-serif" }}>24-Hour Schedule</span>
             </div>
 
-            {/* Title */}
             <h2 style={{
-              fontFamily:"'Trebuchet MS',sans-serif",
-              fontSize:'clamp(34px,6vw,58px)',
-              fontWeight:900, letterSpacing:'-2px', lineHeight:1, margin:'0 0 28px', color:'#fff',
+              fontFamily: "'Trebuchet MS', sans-serif",
+              fontSize: 'clamp(36px, 6vw, 60px)',
+              fontWeight: 900, letterSpacing: '-2px', lineHeight: 1, margin: '0 0 16px',
+              animation: 'title-reveal 0.8s cubic-bezier(.22,1,.36,1) both',
             }}>
-              Prize{' '}
-              <span style={{
-                background:'linear-gradient(90deg,#6366f1,#38bdf8,#a78bfa)',
-                WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
-              }}>Pool</span>
+              <span style={{ color: '#fff' }}>Event </span>
+              <span style={{ background: 'linear-gradient(90deg, #6366f1, #38bdf8, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Timeline</span>
             </h2>
 
-            {/* ── Big total counter ── */}
-            <div style={{
-              display:'inline-flex', flexDirection:'column', alignItems:'center',
-              padding:'28px 56px', borderRadius:'24px',
-              background:'rgba(255,255,255,0.03)',
-              border:'1px solid rgba(99,102,241,0.2)',
-              backdropFilter:'blur(14px)',
-              boxShadow:'0 0 80px rgba(99,102,241,0.08), inset 0 1px 0 rgba(255,255,255,0.07)',
-              position:'relative', overflow:'hidden',
-            }}>
-              {/* Inner top shimmer */}
-              <div style={{
-                position:'absolute',top:0,left:'20%',right:'20%',height:'1px',
-                background:'linear-gradient(90deg,transparent,rgba(99,102,241,0.6),rgba(56,189,248,0.4),transparent)',
-              }}/>
-
-              <div style={{ color:'#334155', fontSize:'11px', fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', fontFamily:"'Trebuchet MS',sans-serif", marginBottom:'8px' }}>
-                Total Prize Money
-              </div>
-              <div style={{ display:'flex', alignItems:'baseline', gap:'6px', lineHeight:1 }}>
-                <span style={{ fontSize:'clamp(22px,4vw,36px)', fontWeight:900, color:'rgba(99,102,241,0.65)', fontFamily:"'Trebuchet MS',sans-serif" }}>₹</span>
-                <span
-                  className="total-num"
-                  style={{
-                    fontSize:'clamp(52px,9vw,92px)', fontWeight:900,
-                    color:'#fff', fontFamily:"'Trebuchet MS',sans-serif",
-                    letterSpacing:'-4px', lineHeight:1,
-                  }}
-                >{total.toLocaleString('en-IN')}</span>
-              </div>
-              <div style={{ color:'#475569', fontSize:'13px', fontWeight:500, fontFamily:"'Trebuchet MS',sans-serif", marginTop:'8px' }}>
-                in exciting prizes up for grabs
-              </div>
-
-              {/* 4 equal badge pills */}
-              <div className="equal-strip">
-                {TRACK_COLORS.map((t, i) => (
-                  <div key={i} style={{
-                    padding:'4px 14px', borderRadius:'999px',
-                    background:`${t.soft}0.1)`,
-                    border:`1px solid ${t.soft}0.28)`,
-                    color: t.color,
-                    fontSize:'11px', fontWeight:700,
-                    fontFamily:"'Trebuchet MS',sans-serif",
-                    letterSpacing:'0.5px',
-                    animation:`float-badge ${3.5 + i * 0.4}s ease-in-out infinite`,
-                    animationDelay:`${i * 0.25}s`,
-                  }}>
-                    {t.label} · ₹45K
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Structure hint */}
             <p style={{
-              color:'#334155', fontSize:'13px',
-              fontFamily:"'Trebuchet MS',sans-serif",
-              marginTop:'18px', letterSpacing:'0.3px',
+              color: '#64748b', fontSize: '16px', fontFamily: "'Trebuchet MS', sans-serif",
+              maxWidth: '420px', margin: '0 auto', lineHeight: 1.7,
+              animation: 'title-reveal 0.8s cubic-bezier(.22,1,.36,1) 0.15s both',
             }}>
-              Each track: &nbsp;
-              <span style={{color:'#fbbf24', fontWeight:700}}>🥇 ₹25,000</span>
-              &nbsp;+&nbsp;
-              <span style={{color:'#94a3b8', fontWeight:700}}>🥈 ₹15,000</span>
-              &nbsp;+&nbsp;
-              <span style={{color:'#92400e', fontWeight:700}}>🥉 ₹10,000</span>
+              March 22–23, 2025 · From kickoff to prize stage — every moment mapped.
             </p>
           </div>
 
-          {/* ── Track vaults grid ── */}
-          <div className="tracks-grid">
-            {TRACK_COLORS.map((track, i) => (
-              <TrackVault key={i} track={track} index={i} active={secInView} />
+          {/* Day 1 label */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '32px' }}>
+            <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(99,102,241,0.4))' }} />
+            <div style={{
+              padding: '6px 20px', borderRadius: '999px',
+              background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.4)',
+              color: '#a5b4fc', fontSize: '11px', fontWeight: 700, letterSpacing: '3px',
+              textTransform: 'uppercase', fontFamily: "'Trebuchet MS', sans-serif",
+            }}>March 22 · Day 1</div>
+            <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(99,102,241,0.4))' }} />
+          </div>
+
+          {/* Timeline items */}
+          <div style={{ position: 'relative' }}>
+            {/* Center spine */}
+            <div style={{
+              position: 'absolute', left: '50%', top: 0, bottom: 0,
+              width: '3px', transform: 'translateX(-50%)',
+              background: 'rgba(255,255,255,0.04)', borderRadius: '2px', overflow: 'hidden',
+            }}>
+              <div className="tl-line-inner" style={{
+                width: '100%',
+                background: 'linear-gradient(to bottom, #6366f1, #38bdf8, #a78bfa)',
+                borderRadius: '2px',
+              }} />
+            </div>
+
+            {timelineEvents.map((event, i) => (
+              <TimelineItem key={i} event={event} index={i} />
             ))}
           </div>
 
-          {/* Bottom note */}
-          <div style={{
-            marginTop:'36px', padding:'13px 20px', borderRadius:'12px',
-            background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)',
-            display:'flex', alignItems:'flex-start', gap:'10px',
-            maxWidth:'660px', margin:'36px auto 0',
-          }}>
-            <span style={{fontSize:'15px',flexShrink:0}}>📌</span>
-            <span style={{color:'#334155',fontSize:'12px',fontFamily:"'Trebuchet MS',sans-serif",lineHeight:1.6}}>
-              Prizes are awarded per track independently. Goodies &amp; certificates will be distributed to all participants regardless of ranking.
-            </span>
-          </div>
+          {/* Bottom accent */}
+          <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.3), transparent)', marginTop: '40px' }} />
         </div>
       </section>
     </>
