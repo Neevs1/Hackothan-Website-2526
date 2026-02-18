@@ -128,7 +128,6 @@ function EnergyBeam({ radius, duration, color, startAngle, mobileRadius }: {
   startAngle: number;
   mobileRadius: number;
 }) {
-  // We render two SVGs: one for desktop (hidden on mobile), one for mobile (hidden on desktop)
   const renderSVG = (r: number, cls: string) => (
     <motion.div
       className={`absolute inset-0 flex items-center justify-center pointer-events-none ${cls}`}
@@ -165,9 +164,7 @@ function EnergyBeam({ radius, duration, color, startAngle, mobileRadius }: {
 
   return (
     <>
-      {/* Desktop beam — hidden on mobile */}
       {renderSVG(radius, 'beam-desktop')}
-      {/* Mobile beam — hidden on desktop */}
       {renderSVG(mobileRadius, 'beam-mobile')}
     </>
   );
@@ -341,7 +338,6 @@ export default function HeroSection() {
         }
 
         /* ── Mobile orbit radius fixes ── */
-        /* Energy beams: show mobile-sized, hide desktop-sized */
         .beam-desktop { display: block; }
         .beam-mobile  { display: none; }
 
@@ -349,13 +345,23 @@ export default function HeroSection() {
           .beam-desktop { display: none !important; }
           .beam-mobile  { display: block !important; }
 
-          /* CSS spinning rings — shrink inset so they stay inside the card */
+          /* CSS spinning rings — shrink so they stay inside the card */
           .ring-outer { inset: -10px !important; }
           .ring-mid   { inset: -20px !important; }
           .ring-inner { inset: -8px  !important; }
 
-          /* Sparks — hide on mobile so they don't overflow the column */
+          /* Sparks — hide on mobile */
           .logo-spark { display: none !important; }
+
+          /* ── CRITICAL FIX: Force-hide the absolute desktop badges on mobile ──
+             Framer Motion overrides display via inline style, so we use
+             visibility + pointer-events instead of display:none to guarantee
+             they never appear on mobile and never overlap the logo. */
+          .badge-desktop {
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+          }
         }
       `}</style>
 
@@ -461,29 +467,19 @@ export default function HeroSection() {
 
             {/* ══ RIGHT — LOGO ══ */}
             <motion.div
-              className="hero-logo-col relative flex justify-center lg:justify-end"
+              className="hero-logo-col relative flex flex-col items-center lg:items-end"
               initial={{ opacity: 0, x: 48 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.85, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/*
-                MOBILE ORBIT FIX:
-                max-w is constrained to prevent overflow on narrow screens.
-                The logo wrapper clips overflow so rings/beams can't bleed outside.
-              */}
-              <div className="relative w-full max-w-[500px] lg:max-w-[500px] max-w-[280px] sm:max-w-[360px]">
+              <div className="relative w-full max-w-[500px] lg:max-w-[500px] sm:max-w-[360px]" style={{ maxWidth: 'min(500px, 80vw)' }}>
 
-                {/* ── Energy beams: each renders a desktop + mobile sized version ── */}
-                {/*
-                  Desktop radii: 280 / 300 / 260
-                  Mobile radii:  110 / 120 / 100   (≈40% of desktop, fits inside a 280px card)
-                */}
+                {/* ── Energy beams ── */}
                 <EnergyBeam radius={280} mobileRadius={110} duration={7}  color="rgba(99,102,241,0.75)"  startAngle={0}   />
                 <EnergyBeam radius={300} mobileRadius={120} duration={11} color="rgba(56,189,248,0.60)"  startAngle={120} />
                 <EnergyBeam radius={260} mobileRadius={100} duration={9}  color="rgba(167,139,250,0.65)" startAngle={240} />
 
                 {/* ── CSS spinning rings ── */}
-                {/* ring-outer / ring-mid / ring-inner classes let mobile CSS override inset */}
                 <div className="ring-outer absolute inset-[-32px] rounded-full border border-indigo-500/15 animate-ring-spin" />
                 <div className="ring-mid absolute inset-[-64px] rounded-full border border-blue-500/10 animate-ring-rev" />
                 <div
@@ -554,13 +550,16 @@ export default function HeroSection() {
                   </LogoFloat>
                 </div>
 
-                {/* ── Floating badge — top right ── */}
+                {/* ══ DESKTOP-ONLY absolute badges ══ */}
+
+                {/* Prize Pool badge */}
                 <motion.div
-                  className="absolute top-4 right-[-16px] z-20 px-3 py-2 rounded-xl bg-[#0e1630]/80 border border-indigo-500/30 backdrop-blur-md shadow-xl"
+                  className="absolute top-4 right-[-16px] z-20 px-3 py-2 rounded-xl bg-[#0e1630]/80 border border-indigo-500/30 backdrop-blur-md shadow-xl hidden lg:block"
                   initial={{ opacity: 0, scale: 0.75, x: 12 }}
                   animate={{ opacity: 1, scale: 1, x: 0 }}
                   transition={{ delay: 1.0, duration: 0.5, type: 'spring', bounce: 0.45 }}
                   whileHover={{ scale: 1.06, boxShadow: '0 0 20px rgba(99,102,241,0.4)' }}
+                  style={{ display: undefined }}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-lg">🏆</span>
@@ -571,13 +570,14 @@ export default function HeroSection() {
                   </div>
                 </motion.div>
 
-                {/* ── Floating badge — bottom left ── */}
+                {/* Duration badge */}
                 <motion.div
-                  className="absolute bottom-8 left-[-16px] z-20 px-3 py-2 rounded-xl bg-[#0e1630]/80 border border-blue-500/30 backdrop-blur-md shadow-xl"
+                  className="absolute bottom-8 left-[-16px] z-20 px-3 py-2 rounded-xl bg-[#0e1630]/80 border border-blue-500/30 backdrop-blur-md shadow-xl hidden lg:block"
                   initial={{ opacity: 0, scale: 0.75, x: -12 }}
                   animate={{ opacity: 1, scale: 1, x: 0 }}
                   transition={{ delay: 1.2, duration: 0.5, type: 'spring', bounce: 0.45 }}
                   whileHover={{ scale: 1.06, boxShadow: '0 0 20px rgba(59,130,246,0.4)' }}
+                  style={{ display: undefined }}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-lg">⚡</span>
@@ -588,9 +588,9 @@ export default function HeroSection() {
                   </div>
                 </motion.div>
 
-                {/* ── Live badge ── */}
+                {/* Live Soon badge */}
                 <motion.div
-                  className="absolute top-[-8px] left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/40"
+                  className="hidden lg:flex absolute top-[-8px] left-1/2 -translate-x-1/2 z-20 items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/40"
                   initial={{ opacity: 0, y: -10, scale: 0.8 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ delay: 1.4, duration: 0.5, type: 'spring', bounce: 0.5 }}
@@ -600,6 +600,9 @@ export default function HeroSection() {
                 </motion.div>
 
               </div>
+
+
+
             </motion.div>
 
           </div>
