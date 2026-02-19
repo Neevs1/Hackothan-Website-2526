@@ -2,19 +2,26 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useRouter } from 'next/navigation';
 
 const NAV_LINKS = [
-  { label: 'Home',              href: '#home'              },
-  { label: 'Prizes',            href: '#prizes'            },
-  { label: 'Timeline',          href: '#timeline'          },
-  { label: 'Problem Statement', href: '#problem-statement' },
-  { label: 'Rulebook',          href: '#rulebook'          },
+  { label: 'Home',              href: '/home'              },
+  { label: 'Prizes',            href: '/prizes'            },
+  { label: 'Timeline',          href: '/timeline'          },
+  { label: 'Problem Statement', href: '/problem-statement' },
+  { label: 'Rulebook',          href: '/rulebook'          },
 ];
 
 export default function NavBar() {
   const [scrolled,     setScrolled]     = useState(false);
   const [menuOpen,     setMenuOpen]     = useState(false);
   const [activeLink,   setActiveLink]   = useState('home');
+
+  const router = useRouter();
+
+  const handleRegisterClick = () => {
+    router.push('/register');
+  };
 
   /* ── Shrink/frost on scroll ── */
   useEffect(() => {
@@ -216,13 +223,7 @@ export default function NavBar() {
 
               {/* ── Desktop CTA ── */}
               <div className="hidden md:flex items-center gap-3 nav-animate-in" style={{ animationDelay: '0.55s' }}>
-                {/* Live pill
-                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-indigo-500/25 bg-indigo-500/10">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 dot-pulse" />
-                  <span className="text-xs font-semibold text-indigo-300 tracking-widest uppercase">Live Soon</span>
-                </div> */}
-
-                {/* Register button */}
+                {/* Register button - Desktop */}
                 <motion.button
                   className="nav-shimmer-btn relative px-6 py-2.5 rounded-xl font-bold text-sm text-white tracking-wide"
                   style={{
@@ -236,6 +237,7 @@ export default function NavBar() {
                   }}
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                  onClick={handleRegisterClick}
                 >
                   <span className="relative z-10 flex items-center gap-2">
                     Register Now
@@ -378,19 +380,27 @@ export default function NavBar() {
                   <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 dot-pulse" />
                   <span className="text-xs font-semibold text-indigo-300 tracking-widest uppercase">Registration Open</span>
                 </div>
+
+                {/* Register button - Mobile */}
                 <motion.button
-                  className="nav-shimmer-btn relative w-full py-3 rounded-xl font-bold text-sm text-white tracking-wide"
+                  className="nav-shimmer-btn relative w-full px-6 py-2.5 rounded-xl font-bold text-sm text-white tracking-wide"
                   style={{
                     fontFamily: "'Trebuchet MS', sans-serif",
                     background: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)',
-                    boxShadow: '0 0 24px rgba(99,102,241,0.4)',
+                    boxShadow: '0 0 24px rgba(99,102,241,0.35)',
+                  }}
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: '0 0 36px rgba(99,102,241,0.6)',
                   }}
                   whileTap={{ scale: 0.97 }}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.35, duration: 0.4 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                  onClick={() => {
+                    handleRegisterClick();
+                    setMenuOpen(false);
+                  }}
                 >
-                  <span className="relative z-10 flex items-center justify-center gap-2">
+                  <span className="relative z-10 flex items-center gap-2 justify-center">
                     Register Now
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />

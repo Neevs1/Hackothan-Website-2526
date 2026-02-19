@@ -1,6 +1,6 @@
 import Image from "next/image";
 import HeroSection from "./hero/page";
-import NavBar from "@/components/navbar/page";
+import NavBar from "@/components/Navbar";
 import Timeline from "@/components/Timeline"; 
 import PrizePool from "@/components/prizepool";
 
