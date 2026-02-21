@@ -297,7 +297,7 @@ export default function Timeline() {
             </h2>
 
             <p style={{
-              color: '#64748b', fontSize: '16px', fontFamily: "'Trebuchet MS', sans-serif",
+              color: '#22D3EE', fontSize: '16px', fontFamily: "'Trebuchet MS', sans-serif",
               maxWidth: '420px', margin: '0 auto', lineHeight: 1.7,
               animation: 'title-reveal 0.8s cubic-bezier(.22,1,.36,1) 0.15s both',
             }}>
@@ -311,7 +311,7 @@ export default function Timeline() {
             <div style={{
               padding: '6px 20px', borderRadius: '999px',
               background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.4)',
-              color: '#a5b4fc', fontSize: '11px', fontWeight: 700, letterSpacing: '3px',
+              color: '#22D3EE', fontSize: '15px', fontWeight: 700, letterSpacing: '3px',
               textTransform: 'uppercase', fontFamily: "'Trebuchet MS', sans-serif",
             }}>March 22 · Day 1</div>
             <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(99,102,241,0.4))' }} />

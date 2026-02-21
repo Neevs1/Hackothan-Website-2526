@@ -126,7 +126,7 @@ function TrackVault({ track, index, active }: {
             textShadow: hovered ? `0 0 20px ${soft}0.6)` : 'none',
             transition: 'text-shadow 0.3s',
           }}>₹45K</div>
-          <div style={{ color: '#334155', fontSize: '8px', fontWeight: 700, letterSpacing: '1.5px', fontFamily: "'Trebuchet MS',sans-serif" }}>
+          <div style={{ color: '#facc15', fontSize: '8px', fontWeight: 700, letterSpacing: '1.5px', fontFamily: "'Trebuchet MS',sans-serif" }}>
             PER TRACK
           </div>
         </div>
@@ -329,7 +329,7 @@ export default function PrizePool() {
                 background:'linear-gradient(90deg,transparent,rgba(99,102,241,0.6),rgba(56,189,248,0.4),transparent)',
               }}/>
 
-              <div style={{ color:'#334155', fontSize:'11px', fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', fontFamily:"'Trebuchet MS',sans-serif", marginBottom:'8px' }}>
+              <div style={{ color:'#facc15', fontSize:'15px', fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', fontFamily:"'Trebuchet MS',sans-serif", marginBottom:'8px' }}>
                 Total Prize Money
               </div>
               <div style={{ display:'flex', alignItems:'baseline', gap:'6px', lineHeight:1 }}>
@@ -343,7 +343,7 @@ export default function PrizePool() {
                   }}
                 >{total.toLocaleString('en-IN')}</span>
               </div>
-              <div style={{ color:'#475569', fontSize:'13px', fontWeight:500, fontFamily:"'Trebuchet MS',sans-serif", marginTop:'8px' }}>
+              <div style={{ color:'#facc15', fontSize:'15px', fontWeight:500, fontFamily:"'Trebuchet MS',sans-serif", marginTop:'8px' }}>
                 in exciting prizes up for grabs
               </div>
 
@@ -369,16 +369,16 @@ export default function PrizePool() {
 
             {/* Structure hint */}
             <p style={{
-              color:'#334155', fontSize:'13px',
+              color:'#22D3EE', fontSize:'15px',
               fontFamily:"'Trebuchet MS',sans-serif",
               marginTop:'18px', letterSpacing:'0.3px',
             }}>
               Each track: &nbsp;
-              <span style={{color:'#fbbf24', fontWeight:700}}>🥇 ₹20,000</span>
+              <span style={{color:'#fbbf24', fontWeight:900}}>🥇 ₹20,000</span>
               &nbsp;+&nbsp;
-              <span style={{color:'#94a3b8', fontWeight:700}}>🥈 ₹15,000</span>
+              <span style={{color:'#94a3b8', fontWeight:900}}>🥈 ₹15,000</span>
               &nbsp;+&nbsp;
-              <span style={{color:'#92400e', fontWeight:700}}>🥉 ₹10,000</span>
+              <span style={{color:'#92400e', fontWeight:900}}>🥉 ₹10,000</span>
             </p>
           </div>
 
@@ -397,7 +397,7 @@ export default function PrizePool() {
             maxWidth:'660px', margin:'36px auto 0',
           }}>
             <span style={{fontSize:'15px',flexShrink:0}}>📌</span>
-            <span style={{color:'#334155',fontSize:'12px',fontFamily:"'Trebuchet MS',sans-serif",lineHeight:1.6}}>
+            <span style={{color:'#22D3EE',fontSize:'15px',fontFamily:"'Trebuchet MS',sans-serif",lineHeight:1.6}}>
               Prizes are awarded per track independently. Goodies &amp; certificates will be distributed to all participants regardless of ranking.
             </span>
           </div>

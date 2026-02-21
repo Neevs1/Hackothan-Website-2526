@@ -427,7 +427,7 @@ export default function HeroSection() {
               </div>
 
               {/* Description */}
-              <p className={`text-base sm:text-lg text-gray-400 max-w-md leading-relaxed slide-up ${mounted ? '' : 'opacity-0'}`} style={{ animationDelay: '0.5s' }}>
+              <p className={`text-lg sm:text-2xl text-yellow-400  max-w-md leading-relaxed slide-up ${mounted ? '' : 'opacity-0'}`} style={{ animationDelay: '0.5s' }}>
                 A 24-hour coding marathon where ideas ignite, innovation thrives,
                 and developers collaborate to build solutions that matter.
               </p>
@@ -443,14 +443,14 @@ export default function HeroSection() {
                     <div className="text-2xl font-extrabold text-white">
                       <Counter end={value} suffix={suffix} />
                     </div>
-                    <div className="text-xs text-gray-500 uppercase tracking-widest mt-0.5">{label}</div>
+                    <div className="text-xs text-yellow-500  uppercase tracking-widest mt-0.5">{label}</div>
                   </div>
                 ))}
               </div>
 
               {/* CTA Buttons */}
               <div className={`flex flex-col sm:flex-row gap-4 pt-2 slide-up ${mounted ? '' : 'opacity-0'}`} style={{ animationDelay: '0.75s' }}>
-                <button className="btn-primary group relative px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold text-base shadow-[0_0_30px_rgba(99,102,241,0.35)] hover:shadow-[0_0_50px_rgba(99,102,241,0.55)] hover:scale-[1.04] active:scale-[0.98] transition-all duration-300">
+                <button className="btn-primary group relative px-8 py-3.5 rounded-xl  bg-gradient-to-r from-blue-500 to-indigo-500 text-green-500 font-bold text-base shadow-[0_0_30px_rgba(99,102,241,0.35)] hover:shadow-[0_0_50px_rgba(99,102,241,0.55)] hover:scale-[1.04] active:scale-[0.98] transition-all duration-300">
                   <span className="relative z-10 flex items-center gap-2">
                     Register Now
                     <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -458,7 +458,7 @@ export default function HeroSection() {
                     </svg>
                   </span>
                 </button>
-                <button className="group px-8 py-3.5 rounded-xl border border-white/15 backdrop-blur-md bg-white/5 text-white font-bold text-base hover:bg-white/10 hover:border-white/30 hover:scale-[1.04] active:scale-[0.98] transition-all duration-300 flex items-center gap-2">
+                <button className="group px-8 py-3.5 rounded-xl border border-white/15 backdrop-blur-md bg-white/5 text-emerald-500 font-bold text-base hover:bg-white/10 hover:border-white/30 hover:scale-[1.04] active:scale-[0.98] transition-all duration-300 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
                   View Prizes
                 </button>
