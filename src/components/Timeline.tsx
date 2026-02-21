@@ -274,7 +274,7 @@ export default function Timeline() {
 
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
  
- 
+
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: '72px' }}>
             <div className="day-chip" style={{
@@ -284,7 +284,7 @@ export default function Timeline() {
               marginBottom: '24px',
             }}>
               <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#818cf8', display: 'inline-block', animation: 'pulse-ring 2s infinite' }} />
-              <span style={{ color: '#a5b4fc', fontSize: '12px', fontWeight: 600, letterSpacing: '3px', textTransform: 'uppercase', fontFamily: "'Trebuchet MS', sans-serif" }}>24-Hour Schedule</span>
+              <span style={{ color: '#a5b4fc', fontSize: '15px', fontWeight: 600, letterSpacing: '3px', textTransform: 'uppercase', fontFamily: "'Trebuchet MS', sans-serif" }}>24-Hour Schedule</span>
             </div>
 
             <h2 style={{

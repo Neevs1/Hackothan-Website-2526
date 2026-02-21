@@ -737,7 +737,7 @@ const RegistrationForm: React.FC = () => {
               <h2>Project Submission</h2>
 
               <div className="selection-criteria">
-                <h3>Selection Criteria</h3>
+                <h3 >Selection Criteria</h3>
                 <p>
                   In case of excessive registrations, an elimination round will be conducted.
                   Please share your project presentation and video walkthrough. Selection will be based on:

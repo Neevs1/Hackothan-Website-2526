@@ -297,7 +297,7 @@ export default function PrizePool() {
               marginBottom:'22px', animation:'chip-float 4s ease-in-out infinite',
             }}>
               <span style={{width:'6px',height:'6px',borderRadius:'50%',background:'#818cf8',display:'inline-block',boxShadow:'0 0 8px #818cf8',animation:'pulse-dot 2s infinite'}}/>
-              <span style={{color:'#a5b4fc',fontSize:'11px',fontWeight:700,letterSpacing:'3px',textTransform:'uppercase',fontFamily:"'Trebuchet MS',sans-serif"}}>4 Tracks · ₹45,000 Each</span>
+              <span style={{color:'#a5b4fc',fontSize:'15px',fontWeight:900,letterSpacing:'3px',textTransform:'uppercase',fontFamily:"'Trebuchet MS',sans-serif"}}>4 Tracks · ₹45,000 Each</span>
             </div>
 
             {/* Title */}
@@ -329,9 +329,11 @@ export default function PrizePool() {
                 background:'linear-gradient(90deg,transparent,rgba(99,102,241,0.6),rgba(56,189,248,0.4),transparent)',
               }}/>
 
-              <div style={{ color:'#facc15', fontSize:'15px', fontWeight:700, letterSpacing:'3px', textTransform:'uppercase', fontFamily:"'Trebuchet MS',sans-serif", marginBottom:'8px' }}>
+
+              <div style={{ color:'#facc15', fontSize:'18px', fontWeight:900, letterSpacing:'3px', textTransform:'uppercase', fontFamily:"'Trebuchet MS',sans-serif", marginBottom:'8px' }}>
                 Total Prize Money
               </div>
+
               <div style={{ display:'flex', alignItems:'baseline', gap:'6px', lineHeight:1 }}>
                 <span style={{ fontSize:'clamp(22px,4vw,36px)', fontWeight:900, color:'rgba(99,102,241,0.65)', fontFamily:"'Trebuchet MS',sans-serif" }}>₹</span>
                 <span
@@ -355,7 +357,7 @@ export default function PrizePool() {
                     background:`${t.soft}0.1)`,
                     border:`1px solid ${t.soft}0.28)`,
                     color: t.color,
-                    fontSize:'11px', fontWeight:700,
+                    fontSize:'11px', fontWeight:900,
                     fontFamily:"'Trebuchet MS',sans-serif",
                     letterSpacing:'0.5px',
                     animation:`float-badge ${3.5 + i * 0.4}s ease-in-out infinite`,
@@ -398,7 +400,7 @@ export default function PrizePool() {
           }}>
             <span style={{fontSize:'15px',flexShrink:0}}>📌</span>
             <span style={{color:'#22D3EE',fontSize:'15px',fontFamily:"'Trebuchet MS',sans-serif",lineHeight:1.6}}>
-              Prizes are awarded per track independently. Goodies &amp; certificates will be distributed to all participants regardless of ranking.
+              Prizes to be awarded per track independently. Goodies &amp; certificates will be distributed to all participants regardless of ranking.
             </span>
           </div>
         </div>
