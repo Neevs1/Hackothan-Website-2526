@@ -273,7 +273,8 @@ export default function Timeline() {
         <div style={{ position: 'absolute', bottom: '-100px', left: '-150px', width: '450px', height: '450px', background: 'radial-gradient(circle, rgba(56,189,248,0.14) 0%, transparent 70%)', borderRadius: '50%', animation: 'orb-drift 10s ease-in-out infinite reverse', pointerEvents: 'none' }} />
 
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
-
+ 
+ 
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: '72px' }}>
             <div className="day-chip" style={{
