@@ -427,7 +427,7 @@ export default function HeroSection() {
               </div>
 
               {/* Description */}
-              <p className={`text-lg sm:text-2xl text-yellow-400  max-w-md leading-relaxed slide-up ${mounted ? '' : 'opacity-0'}`} style={{ animationDelay: '0.5s' }}>
+              <p className={`text-lg sm:text-2xl text-cyan-400  max-w-md leading-relaxed slide-up ${mounted ? '' : 'opacity-0'}`} style={{ animationDelay: '0.5s' }}>
                 A 24-hour coding marathon where ideas ignite, innovation thrives,
                 and developers collaborate to build solutions that matter.
               </p>
@@ -443,7 +443,7 @@ export default function HeroSection() {
                     <div className="text-2xl font-extrabold text-white">
                       <Counter end={value} suffix={suffix} />
                     </div>
-                    <div className="text-xs text-yellow-500  uppercase tracking-widest mt-0.5">{label}</div>
+                    <div className="text-xs text-cyan-500  uppercase tracking-widest mt-0.5">{label}</div>
                   </div>
                 ))}
               </div>
