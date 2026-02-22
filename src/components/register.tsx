@@ -131,18 +131,20 @@ const globalStyles = `
     padding: 6px 16px; border-radius: 999px;
     border: 1px solid rgba(99,102,241,0.4);
     background: rgba(99,102,241,0.12); backdrop-filter: blur(8px);
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.18em;
-    text-transform: uppercase; color: #a5b4fc;
+    font-size: 20px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: cyan;
     margin-bottom: 1.2rem;
     font-family: 'Trebuchet MS', sans-serif;
     animation: badge-pop 0.5s 0.2s cubic-bezier(.34,1.56,.64,1) both;
   }
   .rform-header-badge .dot {
-    width: 7px; height: 7px; border-radius: 50%;
+    width: 10px; height: 10px; border-radius: 50%;
     background: #67e8f9; animation: pulse 2s infinite;
+    
   }
   .rform-header h1 {
     font-family: 'Trebuchet MS', sans-serif;
+    color:#22D3EE;
     font-size: clamp(1.8rem, 5vw, 3rem);
     font-weight: 900; letter-spacing: -0.02em; line-height: 1.1;
     background: linear-gradient(90deg, #93c5fd, #6366f1, #c4b5fd, #38bdf8);
@@ -692,7 +694,15 @@ const RegistrationForm: React.FC = () => {
               Ignition HackVerse 2026
             </div>
             <h1>Team Registration</h1>
-            <p>Register your team for the upcoming hackathon event!</p>
+            <p style={{
+    fontFamily: 'Trebuchet MS, sans-serif',
+    color: 'cyan',
+    fontSize: '20px',
+    fontWeight: 800,
+    letterSpacing: '-0.01em',
+    lineHeight: 1.2,
+    marginBottom: '0.75rem'
+  }}>Register your team for the upcoming hackathon event!</p>
           </div>
 
           {/* Alert */}
@@ -737,7 +747,7 @@ const RegistrationForm: React.FC = () => {
               <h2>Project Submission</h2>
 
               <div className="selection-criteria">
-                <h3>Selection Criteria</h3>
+                <h3 >Selection Criteria</h3>
                 <p>
                   In case of excessive registrations, an elimination round will be conducted.
                   Please share your project presentation and video walkthrough. Selection will be based on:
