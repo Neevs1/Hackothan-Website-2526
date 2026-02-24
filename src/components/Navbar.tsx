@@ -119,8 +119,8 @@ export default function NavBar() {
             background: scrolled
               ? 'rgba(6,12,26,0.92)'
               : 'rgba(6,12,26,0.65)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            backdropFilter: 'blur(25px)',
+            WebkitBackdropFilter: 'blur(25px)',
             borderBottom: scrolled
               ? '1px solid rgba(99,102,241,0.20)'
               : '1px solid rgba(99,102,241,0.10)',
@@ -142,7 +142,7 @@ export default function NavBar() {
 
           {/* Orb glow left */}
           <div
-            className="absolute top-[-40px] left-[-60px] w-[220px] h-[120px] rounded-full blur-3xl pointer-events-none"
+            className="absolute top-[-40px] left-[-60px] w-[220px] h-[120px] rounded-full blur-7xl pointer-events-none"
             style={{
               background: 'rgba(59,130,246,0.15)',
               animation: 'orb-drift 7s ease-in-out infinite',
@@ -150,7 +150,7 @@ export default function NavBar() {
           />
           {/* Orb glow right */}
           <div
-            className="absolute top-[-40px] right-[-60px] w-[200px] h-[120px] rounded-full blur-3xl pointer-events-none"
+            className="absolute top-[-40px] right-[-60px] w-[200px] h-[120px] rounded-full blur-7xl pointer-events-none"
             style={{
               background: 'rgba(99,102,241,0.12)',
               animation: 'orb-drift 9s ease-in-out infinite reverse',
@@ -179,7 +179,7 @@ export default function NavBar() {
 
                 {/* Wordmark */}
                 <div style={{ fontFamily: "'Trebuchet MS', sans-serif" }}>
-                  <span className="text-xl font-black text-white tracking-tight leading-none">
+                  <span className="text-3xl font-black text-white tracking-tight leading-none">
                     IGNITION{' '}
                     <span
                       style={{
@@ -207,7 +207,7 @@ export default function NavBar() {
                       key={label}
                       href={href}
                       onClick={() => setActiveLink(id)}
-                      className={`nav-link-item${isActive ? ' active' : ''} nav-animate-in px-3 py-2 text-sm font-semibold tracking-wide transition-colors duration-200 ${isActive ? 'text-blue-300' : 'text-gray-400 hover:text-white'}`}
+                      className={`nav-link-item${isActive ? ' active' : ''} nav-animate-in px-3 py-2 text-sm font-semibold tracking-wide transition-colors duration-200 ${isActive ? 'text-blue-500' : 'text-gray-400 hover:text-white'}`}
                       style={{
                         fontFamily: "'Trebuchet MS', sans-serif",
                         animationDelay: `${0.1 + i * 0.07}s`,
