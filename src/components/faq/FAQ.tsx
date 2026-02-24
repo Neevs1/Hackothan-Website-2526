@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'motion/react';
 
 const faqData = [
   {
+    question: "Is the Hackathon online or offline?",
+    answer: "This is an offline Hackathon conducted at PVG COET, Pune."
     question: "Is the hackathon online or offline?",
     answer: "This is an offline hackathon conducted at PVG COET, Pune."
   },
@@ -13,6 +15,7 @@ const faqData = [
     answer: "Students from all departments and years can participate."
   },
   {
+    question: "What is the allowed team size?",
     question: "What is the team size?",
     answer: "Teams can have 2 to 4 members. Solo participation is not allowed."
   },

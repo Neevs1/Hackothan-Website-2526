@@ -81,9 +81,9 @@ function TimelineItem({ event, index }: { event: typeof timelineEvents[0]; index
             background: '#0b1220',
             border: '1px solid rgba(56,189,248,0.4)',
             color: '#38bdf8',
-            fontSize: '11px',
+            fontSize: '15px',
             fontWeight: 700,
-            letterSpacing: '3px',
+            letterSpacing: '5px',
             textTransform: 'uppercase' as const,
             fontFamily: "'Trebuchet MS', sans-serif",
             whiteSpace: 'nowrap' as const,
@@ -126,6 +126,9 @@ function TimelineItem({ event, index }: { event: typeof timelineEvents[0]; index
           position: 'relative',
           zIndex: 2,
         }}>
+          <div style={{
+            width: '50px',
+            height: '50px',
           <div className="tl-node-circle" style={{
             width: '44px',
             height: '44px',
@@ -135,7 +138,7 @@ function TimelineItem({ event, index }: { event: typeof timelineEvents[0]; index
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '18px',
+            fontSize: '20px',
             boxShadow: '0 0 0 4px rgba(99,102,241,0.25), 0 0 24px rgba(99,102,241,0.4)',
             flexShrink: 0,
             transition: 'box-shadow 0.3s',
@@ -220,6 +223,8 @@ function Card({ event, isLeft }: { event: typeof timelineEvents[0]; isLeft: bool
       </h3>
 
       {/* Description */}
+      <p style={{
+        color: '#94a3b8', fontSize: '15px', margin: 0, lineHeight: 1.6,
       <p className="tl-card-desc" style={{
         color: '#94a3b8', fontSize: '13px', margin: 0, lineHeight: 1.6,
         fontFamily: "'Trebuchet MS', sans-serif",
@@ -382,8 +387,8 @@ export default function Timeline() {
               background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.35)',
               marginBottom: '24px',
             }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#818cf8', display: 'inline-block', animation: 'pulse-ring 2s infinite' }} />
-              <span style={{ color: '#a5b4fc', fontSize: '15px', fontWeight: 600, letterSpacing: '3px', textTransform: 'uppercase', fontFamily: "'Trebuchet MS', sans-serif" }}>24-Hour Schedule</span>
+              <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'cyan', display: 'inline-block', animation: 'pulse-ring 2s infinite' }} />
+              <span style={{ color: '#83dfe9', fontSize: '20px', fontWeight: 600, letterSpacing: '5px', textTransform: 'uppercase', fontFamily: "'Trebuchet MS', sans-serif" }}>24-Hour Schedule</span>
             </div>
 
             <h2 style={{
@@ -411,6 +416,7 @@ export default function Timeline() {
             <div className="day-divider-pill" style={{
               padding: '6px 20px', borderRadius: '999px',
               background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.4)',
+              color: '#22D3EE', fontSize: '18px', fontWeight: 800, letterSpacing: '3px',
               color: '#a5b4fc', fontSize: '11px', fontWeight: 700, letterSpacing: '3px',
               textTransform: 'uppercase', fontFamily: "'Trebuchet MS', sans-serif",
               whiteSpace: 'nowrap',
@@ -429,7 +435,7 @@ export default function Timeline() {
               <div className="tl-line-inner" style={{
                 width: '100%',
                 background: 'linear-gradient(to bottom, #6366f1, #38bdf8, #a78bfa)',
-                borderRadius: '2px',
+                borderRadius: '5px',
               }} />
             </div>
 
