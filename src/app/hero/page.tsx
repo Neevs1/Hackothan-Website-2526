@@ -372,7 +372,7 @@ export default function HeroSection() {
         <div className="absolute bottom-[30%] left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/15 to-transparent" />
 
         {/* ─── Main content ─── */}
-        <div className="relative z-10 container mx-auto px-6 lg:px-12 pt-28 sm:pt-32 lg:pt-24 pb-20">
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 lg:px-12 pt-28 sm:pt-32 lg:pt-24 pb-20">
           <div className="hero-grid grid lg:grid-cols-2 gap-16 items-center">
 
             {/* ══ LEFT CONTENT ══ */}

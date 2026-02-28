@@ -7,16 +7,19 @@ import Sponsors from "@/components/sponsors/Sponsors";
 
 export default function Home() {
   return (
-
-    <div >
+    <div>
       <NavBar />
-      <HeroSection />
-      <PrizePool />
-      <Timeline />
+      <div id="home">
+        <HeroSection />
+      </div>
+      <div id="prizes">
+        <PrizePool />
+      </div>
+      <div id="timeline">
+        <Timeline />
+      </div>
       <Sponsors />
       <FAQ />
-
     </div>
-
-  )
+  );
 }
