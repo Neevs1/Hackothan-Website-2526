@@ -32,9 +32,6 @@ const timelineEvents = [
   { date: "April 4, 2026", time: "2:15 – 3:30 PM", title: "Prize Distribution", description: "Recognition and awarding of winners.", icon: faTrophy,  tag: "Day 2" },
 ];
 
-// ── FIX 1: No explicit return type annotation — TypeScript infers it safely.
-// ── FIX 2: Return `as const` so destructuring gives a typed [Ref, boolean] tuple
-//           instead of the wider (Ref | boolean)[] union type.
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
