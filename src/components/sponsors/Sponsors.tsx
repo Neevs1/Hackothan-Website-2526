@@ -2,19 +2,19 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 const goldSponsors = [
-  { name: 'Sponsor 1', image: '/Redbull.png' },
-  { name: 'Sponsor 2', image: '/Algorand.svg' },
+   { name: 'Sponsor 1', image: '/Redbull.png' },
+  { name: 'Sponsor 2', image: '/algorand_full_logo_white.png' },
+  { name: 'Sponsor 3', image: '/sinarmas.png' }
 ];
 
-const silverSponsors = [
-  { name: 'Sponsor 3', image: '/sinarmas.png' },
+/*const silverSponsors = [
+  ,
  /* { name: 'Sponsor 4', image: '/sponser4.jpg' },
-  { name: 'Sponsor 5', image: '/sponser5.png' },*/
-];
+  { name: 'Sponsor 5', image: '/sponser5.png' },
+]; */
 
 /*const communityPartners = [
-  { name: 'Sponsor 6', image: '/sponser6.jpg' },
-  { name: 'Sponsor 7', image: '/sponser7.jpg' },
+ 
 ];*/
 
 const goldHover    = { glow: 'rgba(234,179,8,0.55)',   bg: 'cyan',   border: 'rgba(234,179,8,0.85)'   };
@@ -264,15 +264,16 @@ export default function Sponser() {
 
           {/* Gold */}
           <div style={{ marginBottom: 'clamp(20px, 3vw, 40px)' }}>
-            <SectionLabel label="Gold Sponsors" color="#eab308" />
+            <SectionLabel label="Our Sponsors" color="#eab308" />
             <div className="sg-gold">
               {goldSponsors.map((s, i) => (
                 <SponsorCard key={i} sponsor={s} hoverStyle={goldHover} visible={visible} delay={i * 80} />
               ))}
             </div>
           </div>
-
+           
           {/* Silver */}
+          {/*
           <div style={{ marginBottom: 'clamp(20px, 3vw, 40px)' }}>
             <SectionLabel label="Silver Sponsors" color="#94a3b8" />
             <div className="sg-silver">
@@ -281,11 +282,11 @@ export default function Sponser() {
               ))}
             </div>
           </div>
-
+           */}
           {/* Community */}
-          {/* 
+          {/*
           <div>
-            <SectionLabel label="Community Partners" color="#22d3ee" />
+            <SectionLabel label="Current Sponsors" color="#22d3ee" />
           <div className="sg-community">
               {communityPartners.map((s, i) => (
                 <SponsorCard key={i} sponsor={s} hoverStyle={partnerHover} visible={visible} delay={370 + i * 70} />
