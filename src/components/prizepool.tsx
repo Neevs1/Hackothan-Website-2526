@@ -333,7 +333,7 @@ export default function PrizePool() {
                 background: "linear-gradient(90deg,transparent,rgba(99,102,241,0.6),rgba(56,189,248,0.4),transparent)" }}
               />
 
-              <div style={{ color: "#64748b", fontSize: "11px", fontWeight: 700, letterSpacing: "3px",
+              <div style={{ color: "cyan", fontSize: "11px", fontWeight: 700, letterSpacing: "3px",
                 textTransform: "uppercase", fontFamily: "'Trebuchet MS',sans-serif", marginBottom: "8px" }}>
                 Total Prize Money
               </div>
@@ -349,7 +349,7 @@ export default function PrizePool() {
                   {total.toLocaleString("en-IN")}
                 </span>
               </div>
-              <div style={{ color: "#475569", fontSize: "13px", fontWeight: 500,
+              <div style={{ color: "cyan", fontSize: "13px", fontWeight: 500,
                 fontFamily: "'Trebuchet MS',sans-serif", marginTop: "8px" }}>
                 in exciting prizes up for grabs
               </div>

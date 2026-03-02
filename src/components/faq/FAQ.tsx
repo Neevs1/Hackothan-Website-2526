@@ -10,15 +10,15 @@ const faqData = [
   },
   {
     question: "Who can participate?",
-    answer: "Students from all departments and years can participate."
+    answer: " All UnderGrad Students from all over India can participate."
   },
   {
     question: "What is the allowed team size?",
-    answer: "Teams can have 2 to 4 members. Solo participation is not allowed."
+    answer: "Teams must have 2 to 4 members. Solo participation is not allowed."
   },
   {
     question: "Is there any registration fee?",
-    answer: "Registration fee of ₹1000 will be there"
+    answer: "Registration fee is ₹1000 amd 50% refundable for teams not selected for offline round."
   },
   {
     question: "Whom can we contact for queries?",

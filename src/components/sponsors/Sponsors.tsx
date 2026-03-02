@@ -1,10 +1,12 @@
 'use client'
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import { image } from 'motion/react-client';
 const goldSponsors = [
    { name: 'Sponsor 1', image: '/Redbull.png' },
   { name: 'Sponsor 2', image: '/algorand_full_logo_white.png' },
-  { name: 'Sponsor 3', image: '/sinarmas.png' }
+  { name: 'Sponsor 3', image: '/sinarmas.png' },
+  {name:'Sponsor 4',image:'/vulnuris.webp'}
 ];
 
 /*const silverSponsors = [
