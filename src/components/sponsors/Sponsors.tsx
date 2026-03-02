@@ -1,30 +1,18 @@
 'use client'
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
-import { image } from 'motion/react-client';
+
 const goldSponsors = [
-   { name: 'Sponsor 1', image: '/Redbull.png' },
+  { name: 'Sponsor 1', image: '/Redbull.png' },
   { name: 'Sponsor 2', image: '/algorand_full_logo_white.png' },
   { name: 'Sponsor 3', image: '/sinarmas.png' },
-  {name:'Sponsor 4',image:'/vulnuris.webp'}
+  { name: 'Sponsor 4', image: '/vulnuris.webp' },
 ];
 
-/*const silverSponsors = [
-  ,
- /* { name: 'Sponsor 4', image: '/sponser4.jpg' },
-  { name: 'Sponsor 5', image: '/sponser5.png' },
-]; */
-
-/*const communityPartners = [
- 
-];*/
-
-const goldHover    = { glow: 'rgba(234,179,8,0.55)',   bg: 'cyan',   border: 'rgba(234,179,8,0.85)'   };
-const silverHover  = { glow: 'rgba(148,163,184,0.45)', bg: 'cyan', border: 'rgba(148,163,184,0.75)' };
-const partnerHover = { glow: 'rgba(34,211,238,0.4)',   bg: 'rgba(34,211,238,0.06)',  border: 'rgba(34,211,238,0.75)'  };
+const goldHover    = { glow: 'rgba(234,179,8,0.35)',   bg: 'rgba(234,179,8,0.07)',   border: 'rgba(234,179,8,0.7)'   };
+const silverHover  = { glow: 'rgba(148,163,184,0.3)',  bg: 'rgba(148,163,184,0.06)', border: 'rgba(148,163,184,0.6)' };
+const partnerHover = { glow: 'rgba(34,211,238,0.3)',   bg: 'rgba(34,211,238,0.06)',  border: 'rgba(34,211,238,0.6)'  };
 
 const css = `
-  /* ── Grid layouts ── */
   .sg-gold {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -43,7 +31,6 @@ const css = `
     margin: 0 auto;
   }
 
-  /* ── Card: aspect-ratio keeps height proportional to width ── */
   .sponsor-card {
     position: relative;
     display: flex;
@@ -56,6 +43,28 @@ const css = `
     width: 100%;
     box-sizing: border-box;
     padding: 0;
+    /* All transitions use the same easing curve */
+    transition:
+      border 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Overlay that fades in to add inner depth on hover */
+  .sponsor-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .sponsor-card:hover::before {
+    opacity: 1;
   }
 
   .sponsor-card img {
@@ -65,43 +74,84 @@ const css = `
     height: auto;
     object-fit: contain;
     display: block;
-    transition: filter 0.22s ease;
     pointer-events: none;
+    position: relative;
+    z-index: 2;
+    transition:
+      filter 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sponsor-card:hover img {
+    transform: scale(1.05);
+    filter: brightness(1.15) saturate(1.1) drop-shadow(0 0 10px rgba(255,255,255,0.18));
+  }
+
+  /* Top-edge shimmer line */
+  .sponsor-card .shimmer {
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sponsor-card:hover .shimmer {
+    opacity: 1;
+  }
+
+  /* Sponsor button hover */
+  .sponsor-btn {
+    padding: 10px 28px;
+    border-radius: 999px;
+    border: 1px solid rgba(99,102,241,0.5);
+    background: rgba(99,102,241,0.12);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    transition:
+      background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sponsor-btn:hover {
+    background: rgba(99,102,241,0.28);
+    border-color: rgba(99,102,241,0.85);
+    box-shadow: 0 0 24px rgba(99,102,241,0.35);
+    transform: translateY(-2px);
+  }
+
+  .sponsor-btn:active {
+    transform: translateY(0px);
+    transition-duration: 0.1s;
   }
 
   /* ── Tablet ── */
   @media (max-width: 900px) {
-    .sg-silver {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .sg-community {
-      width: 80%;
-    }
-    .sponsor-card {
-      aspect-ratio: 16 / 7;
-    }
-    .sponsor-card img {
-      max-width: 60%;
-      max-height: 70%;
-    }
+    .sg-silver { grid-template-columns: repeat(2, 1fr); }
+    .sg-community { width: 80%; }
+    .sponsor-card { aspect-ratio: 16 / 7; }
+    .sponsor-card img { max-width: 60%; max-height: 70%; }
   }
 
   /* ── Mobile ── */
   @media (max-width: 600px) {
-    .sg-gold,
-    .sg-silver,
-    .sg-community {
+    .sg-gold, .sg-silver, .sg-community {
       grid-template-columns: 1fr;
       gap: 12px;
       width: 100%;
     }
-    .sponsor-card {
-      aspect-ratio: 16 / 6;
-    }
-    .sponsor-card img {
-      max-width: 55%;
-      max-height: 65%;
-    }
+    .sponsor-card { aspect-ratio: 16 / 6; }
+    .sponsor-card img { max-width: 55%; max-height: 65%; }
   }
 `;
 
@@ -136,31 +186,40 @@ function SponsorCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        border: `1px solid ${hovered ? hoverStyle.border : 'rgba(255,255,255,0.09)'}`,
-        background: hovered ? hoverStyle.bg : 'rgba(255,255,255,0.04)',
+        border: `1px solid ${hovered ? hoverStyle.border : 'rgba(255,255,255,0.08)'}`,
+        background: hovered
+          ? hoverStyle.bg
+          : 'rgba(255,255,255,0.03)',
         boxShadow: hovered
-          ? `0 0 32px 4px ${hoverStyle.glow}, inset 0 1px 0 rgba(255,255,255,0.09)`
-          : '0 4px 20px rgba(0,0,0,0.55)',
-        transition: `border 0.22s ease, background 0.22s ease, box-shadow 0.22s ease, opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
+          ? `0 0 40px 6px ${hoverStyle.glow}, 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)`
+          : '0 4px 20px rgba(0,0,0,0.5)',
+        /* Entry animation only — hover transitions handled by CSS class */
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateY(0)' : 'translateY(28px)',
+        transition: `
+          border 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.6s ease ${delay}ms,
+          transform 0.6s ease ${delay}ms
+        `,
       }}
     >
-      {/* Top shimmer */}
-      <div style={{
-        position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px',
-        background: hovered
-          ? `linear-gradient(90deg, transparent, ${hoverStyle.border}, transparent)`
-          : 'transparent',
-        transition: 'background 0.22s ease',
-      }} />
+      {/* Top shimmer line — color comes from hoverStyle */}
+      <div
+        className="shimmer"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${hoverStyle.border}, transparent)`,
+        }}
+      />
       <img
         src={sponsor.image}
         alt={sponsor.name}
         style={{
+          /* base filter — hover handled by CSS */
           filter: hovered
-            ? 'brightness(1.12) saturate(1.08) drop-shadow(0 0 8px rgba(255,255,255,0.15))'
-            : 'brightness(0.88) saturate(0.8)',
+            ? undefined          /* let CSS :hover rule take over */
+            : 'brightness(0.85) saturate(0.75)',
         }}
       />
     </div>
@@ -211,6 +270,7 @@ export default function Sponser() {
             transform: visible ? 'translateY(0)' : 'translateY(36px)',
           }}
         >
+          {/* Decorative edges */}
           <div style={{
             position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px',
             background: 'linear-gradient(90deg,transparent,rgba(99,102,241,0.65),rgba(56,189,248,0.45),transparent)',
@@ -273,73 +333,41 @@ export default function Sponser() {
               ))}
             </div>
           </div>
-           
-          {/* Silver */}
-          {/*
-          <div style={{ marginBottom: 'clamp(20px, 3vw, 40px)' }}>
-            <SectionLabel label="Silver Sponsors" color="#94a3b8" />
-            <div className="sg-silver">
-              {silverSponsors.map((s, i) => (
-                <SponsorCard key={i} sponsor={s} hoverStyle={silverHover} visible={visible} delay={160 + i * 70} />
-              ))}
-            </div>
-          </div>
-           */}
-          {/* Community */}
-          {/*
-          <div>
-            <SectionLabel label="Current Sponsors" color="#22d3ee" />
-          <div className="sg-community">
-              {communityPartners.map((s, i) => (
-                <SponsorCard key={i} sponsor={s} hoverStyle={partnerHover} visible={visible} delay={370 + i * 70} />
-              ))}
-            </div>
-          </div>
-          */}
-              {/* Contribute Section */}
-<div style={{ 
-  marginTop: 'clamp(32px, 4vw, 60px)',
-  textAlign: 'center'
-}}>
-  <h2 style={{
-    fontSize: 'clamp(18px, 2.5vw, 28px)',
-    fontWeight: 700,
-    fontFamily: "'Trebuchet MS', sans-serif",
-    color: '#fff',
-    marginBottom: '14px'
-  }}>
-    Want to Contribute to the{' '}
-    <span style={{
-      background: 'linear-gradient(90deg, #818cf8, #a78bfa)',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text'
-    }}>
-      Hackathon?
-    </span>
-  </h2>
 
-  <p style={{
-    fontSize: 'clamp(11px, 1.5vw, 14px)',
-    color: 'rgba(255,255,255,0.45)',
-    marginBottom: '20px'
-  }}>
-    Partner with us to empower innovation and connect with emerging talent.
-  </p>
+          {/* Contribute Section */}
+          <div style={{ marginTop: 'clamp(32px, 4vw, 60px)', textAlign: 'center' }}>
+            <h2 style={{
+              fontSize: 'clamp(18px, 2.5vw, 28px)',
+              fontWeight: 700,
+              fontFamily: "'Trebuchet MS', sans-serif",
+              color: '#fff',
+              marginBottom: '14px',
+            }}>
+              Want to Contribute to the{' '}
+              <span style={{
+                background: 'linear-gradient(90deg, #818cf8, #a78bfa)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}>
+                Hackathon?
+              </span>
+            </h2>
 
-  <button style={{
-    padding: '10px 24px',
-    borderRadius: '999px',
-    border: '1px solid rgba(99,102,241,0.5)',
-    background: 'rgba(99,102,241,0.12)',
-    color: '#fff',
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.3s ease'
-  }}>
-    Become a Sponsor
-  </button>
-</div>
+            <p style={{
+              fontSize: 'clamp(11px, 1.5vw, 14px)',
+              color: 'rgba(255,255,255,0.45)',
+              fontFamily: "'Trebuchet MS', sans-serif",
+              marginBottom: '20px',
+            }}>
+              Partner with us to empower innovation and connect with emerging talent.
+            </p>
+
+            <button className="sponsor-btn">
+              Become a Sponsor
+            </button>
+          </div>
+
           <div style={{
             position: 'absolute', bottom: 0, left: '30%', right: '30%', height: '1px',
             background: 'linear-gradient(90deg,transparent,rgba(99,102,241,0.35),transparent)',
