@@ -175,7 +175,7 @@ function GlowCorona() {
   );
 }
 
-/* ─── Logo floating animation wrapper ─── */
+/* ─── Logo floating animation wrapper (desktop only) ─── */
 function LogoFloat({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
@@ -204,10 +204,18 @@ const PARTICLES = Array.from({ length: 28 }, (_, i) => ({
 
 export default function HeroSection() {
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 80);
     return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
 
   return (
@@ -316,7 +324,6 @@ export default function HeroSection() {
 
         /* ─── LARGE SCREEN FIXES (>= 1920px / 2K / 4K / big TVs) ─── */
 
-        /* Scale up grid background cell size so it doesn't look like noise */
         @media (min-width: 1920px) {
           .hero-bg-grid { background-size: 80px 80px !important; }
         }
@@ -327,7 +334,6 @@ export default function HeroSection() {
           .hero-bg-grid { background-size: 180px 180px !important; }
         }
 
-        /* Widen the content container on huge screens */
         @media (min-width: 1920px) {
           .hero-container { max-width: 1800px !important; }
         }
@@ -338,7 +344,6 @@ export default function HeroSection() {
           .hero-container { max-width: 3400px !important; }
         }
 
-        /* Scale up the title text */
         @media (min-width: 1920px) {
           .hero-title { font-size: clamp(5rem, 7vw, 10rem) !important; }
           .hero-subtitle { font-size: clamp(1.5rem, 2vw, 3rem) !important; }
@@ -373,7 +378,6 @@ export default function HeroSection() {
           .hero-stats-gap { gap: 5rem !important; }
         }
 
-        /* Bigger orbs on large displays so they remain visible */
         @media (min-width: 1920px) {
           .orb-top-right  { width: 900px !important; height: 900px !important; }
           .orb-bottom-left { width: 800px !important; height: 800px !important; }
@@ -387,7 +391,6 @@ export default function HeroSection() {
           .orb-bottom-left { width: 1800px !important; height: 1800px !important; bottom: -500px !important; left: -400px !important; }
         }
 
-        /* Larger particles on big screens */
         @media (min-width: 2560px) {
           .animate-float { min-width: 8px !important; min-height: 8px !important; }
         }
@@ -395,7 +398,6 @@ export default function HeroSection() {
           .animate-float { min-width: 14px !important; min-height: 14px !important; }
         }
 
-        /* Wider gap between hero columns on huge screens */
         @media (min-width: 1920px) {
           .hero-grid { gap: 8rem !important; }
         }
@@ -521,7 +523,7 @@ export default function HeroSection() {
                 style={{ animationDelay: "0.6s" }}
               >
                 {[
-                  { value: 500, suffix: "+",   label: "Hackers"    },
+                  { value: 500, suffix: "+",   label: "Participants"    },
                   { value: 1.8, suffix: "lac",  label: "Prize Pool" },
                   { value: 24,  suffix: "h",    label: "Hackathon"  },
                 ].map(({ value, suffix, label }) => (
@@ -575,57 +577,62 @@ export default function HeroSection() {
             >
               <div className="hero-logo-wrapper relative w-full" style={{ maxWidth: "min(500px, 80vw)" }}>
 
-                {/* CSS spinning rings — desktop only */}
-                <div className="ring-outer absolute inset-[-32px] rounded-full border border-indigo-500/15 animate-ring-spin" />
-                <div className="ring-mid   absolute inset-[-64px] rounded-full border border-blue-500/10 animate-ring-rev" />
-                <div
-                  className="ring-inner absolute inset-[-20px] rounded-full animate-ring-spin"
-                  style={{ border: "1px dashed rgba(99,102,241,0.18)", animationDuration: "24s" }}
-                />
+                {/* ── Desktop-only decorations ── */}
+                {!isMobile && (
+                  <>
+                    {/* CSS spinning rings */}
+                    <div className="ring-outer absolute inset-[-32px] rounded-full border border-indigo-500/15 animate-ring-spin" />
+                    <div className="ring-mid   absolute inset-[-64px] rounded-full border border-blue-500/10 animate-ring-rev" />
+                    <div
+                      className="ring-inner absolute inset-[-20px] rounded-full animate-ring-spin"
+                      style={{ border: "1px dashed rgba(99,102,241,0.18)", animationDuration: "24s" }}
+                    />
 
-                {/* Orbit dots — desktop only */}
-                {[
-                  { deg: 0,   color: "#60a5fa", size: 10 },
-                  { deg: 90,  color: "#818cf8", size: 7  },
-                  { deg: 180, color: "#34d399", size: 10 },
-                  { deg: 270, color: "#a78bfa", size: 7  },
-                ].map(({ deg, color, size }, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute rounded-full orbit-dot"
-                    style={{
-                      width: size, height: size,
-                      top: "50%", left: "50%",
-                      marginTop: -(size / 2), marginLeft: -(size / 2),
-                      background: color,
-                      boxShadow: `0 0 14px 4px ${color}`,
-                      translateX: Math.cos((deg * Math.PI) / 180) * 260,
-                      translateY: Math.sin((deg * Math.PI) / 180) * 260,
-                    }}
-                    animate={{ rotate: 360, scale: [1, 1.5, 1], opacity: [0.7, 1, 0.7] }}
-                    transition={{
-                      rotate:  { duration: 12,  repeat: Infinity, ease: "linear" },
-                      scale:   { duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.6 },
-                      opacity: { duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.6 },
-                    }}
-                  />
-                ))}
+                    {/* Orbit dots */}
+                    {[
+                      { deg: 0,   color: "#60a5fa", size: 10 },
+                      { deg: 90,  color: "#818cf8", size: 7  },
+                      { deg: 180, color: "#34d399", size: 10 },
+                      { deg: 270, color: "#a78bfa", size: 7  },
+                    ].map(({ deg, color, size }, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute rounded-full orbit-dot"
+                        style={{
+                          width: size, height: size,
+                          top: "50%", left: "50%",
+                          marginTop: -(size / 2), marginLeft: -(size / 2),
+                          background: color,
+                          boxShadow: `0 0 14px 4px ${color}`,
+                          translateX: Math.cos((deg * Math.PI) / 180) * 260,
+                          translateY: Math.sin((deg * Math.PI) / 180) * 260,
+                        }}
+                        animate={{ rotate: 360, scale: [1, 1.5, 1], opacity: [0.7, 1, 0.7] }}
+                        transition={{
+                          rotate:  { duration: 12,  repeat: Infinity, ease: "linear" },
+                          scale:   { duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.6 },
+                          opacity: { duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.6 },
+                        }}
+                      />
+                    ))}
 
-                {/* Sparks — desktop only */}
-                {SPARK_ANGLES.map((s, i) => (
-                  <LogoSpark key={i} angle={s.angle} delay={s.delay} radius={s.radius} />
-                ))}
+                    {/* Sparks */}
+                    {SPARK_ANGLES.map((s, i) => (
+                      <LogoSpark key={i} angle={s.angle} delay={s.delay} radius={s.radius} />
+                    ))}
 
-                {/* Glow corona — desktop only */}
-                <div className="glow-corona-wrapper absolute inset-0 flex items-center justify-center">
-                  <div className="relative w-full h-full">
-                    <GlowCorona />
-                  </div>
-                </div>
+                    {/* Glow corona */}
+                    <div className="glow-corona-wrapper absolute inset-0 flex items-center justify-center">
+                      <div className="relative w-full h-full">
+                        <GlowCorona />
+                      </div>
+                    </div>
+                  </>
+                )}
 
-                {/* Logo image */}
+                {/* Logo image — animated float on desktop, static on mobile */}
                 <div className="relative z-10">
-                  <LogoFloat>
+                  {isMobile ? (
                     <Image
                       src="/IgnitionHeroSection-removebg-preview.png"
                       alt="Ignition HackVerse 2026 Logo"
@@ -634,7 +641,18 @@ export default function HeroSection() {
                       priority
                       className="w-full h-auto"
                     />
-                  </LogoFloat>
+                  ) : (
+                    <LogoFloat>
+                      <Image
+                        src="/IgnitionHeroSection-removebg-preview.png"
+                        alt="Ignition HackVerse 2026 Logo"
+                        width={600}
+                        height={700}
+                        priority
+                        className="w-full h-auto"
+                      />
+                    </LogoFloat>
+                  )}
                 </div>
 
               </div>
