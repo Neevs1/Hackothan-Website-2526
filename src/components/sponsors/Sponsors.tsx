@@ -1,14 +1,27 @@
 'use client'
 import { useEffect, useRef, useState } from 'react';
-
-const sponsors = [
-  { name: 'Red Bull',   image: '/Redbull.png' },
-  { name: 'Algorand',  image: '/algorand_full_logo_white.png' },
-  { name: 'Sinar Mas', image: '/sinarmas.png' },
-  { name: 'Sponsor 4', image: '/sponsor4.png' },
-  { name: 'Sponsor 5', image: '/sponsor5.png' },
-  { name: 'Sponsor 6', image: '/sponsor6.png' },
+import Image from 'next/image';
+import { image } from 'motion/react-client';
+const goldSponsors = [
+   { name: 'Sponsor 1', image: '/Redbull.png' },
+  { name: 'Sponsor 2', image: '/algorand_full_logo_white.png' },
+  { name: 'Sponsor 3', image: '/sinarmas.png' },
+  {name:'Sponsor 4',image:'/vulnuris.webp'}
 ];
+
+/*const silverSponsors = [
+  ,
+ /* { name: 'Sponsor 4', image: '/sponser4.jpg' },
+  { name: 'Sponsor 5', image: '/sponser5.png' },
+]; */
+
+/*const communityPartners = [
+ 
+];*/
+
+const goldHover    = { glow: 'rgba(234,179,8,0.55)',   bg: 'cyan',   border: 'rgba(234,179,8,0.85)'   };
+const silverHover  = { glow: 'rgba(148,163,184,0.45)', bg: 'cyan', border: 'rgba(148,163,184,0.75)' };
+const partnerHover = { glow: 'rgba(34,211,238,0.4)',   bg: 'rgba(34,211,238,0.06)',  border: 'rgba(34,211,238,0.75)'  };
 
 const css = `
   .sponsors-section * { box-sizing: border-box; }
