@@ -104,13 +104,16 @@ export async function POST(req: NextRequest) {
           <h3>📞 For Any Queries, Contact:</h3>
           <div style="padding:16px; border:1px solid #e5e7eb; border-radius:8px;">
             <p style="margin:6px 0;">
-              <strong>Shreyash Dhavale</strong><br/>
-              📱 +91 9876543210
+              <strong>Gauri Kharad</strong><br/>
+              📱 +91 96570 53686
             </p>
-
             <p style="margin:6px 0;">
-              <strong>Event Coordinator</strong><br/>
-              📱 +91 9123456789
+              <strong>Anvi Kore </strong><br/>
+              📱 +91 94056 10000
+            </p>
+            <p style="margin:6px 0;">
+              <strong>Sakshi Patil</strong><br/>
+              📱 +91 96372 71127
             </p>
           </div>
 

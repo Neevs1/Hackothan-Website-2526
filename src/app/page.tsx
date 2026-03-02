@@ -4,6 +4,7 @@ import Timeline from "@/components/Timeline";
 import PrizePool from "@/components/prizepool";
 import FAQ from "@/components/faq/FAQ";
 import Sponsors from "@/components/sponsors/Sponsors";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       </div>
       <Sponsors />
       <FAQ />
+      <Footer />
     </div>
   );
 }
