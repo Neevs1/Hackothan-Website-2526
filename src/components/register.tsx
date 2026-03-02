@@ -80,7 +80,7 @@ const globalStyles = `
     50% { opacity: 0.4; }
   }
   @keyframes popup-in {
-    from { opacity:0; transform: scale(0.85) translateY(30px); }
+    from { opacity:0; transform: scale(0.88) translateY(24px); }
     to   { opacity:1; transform: scale(1) translateY(0); }
   }
   @keyframes overlay-in {
@@ -336,10 +336,7 @@ const globalStyles = `
   }
   .form-input::placeholder { color: #475569; }
 
-  /* ── Custom dropdown wrapper ── */
-  .select-wrapper {
-    position: relative; width: 100%;
-  }
+  .select-wrapper { position: relative; width: 100%; }
   .select-wrapper::after {
     content: '';
     position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
@@ -347,14 +344,6 @@ const globalStyles = `
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
     border-top: 6px solid #6366f1;
-    pointer-events: none;
-    transition: transform 0.2s;
-  }
-  .select-badge {
-    position: absolute; left: 10px; top: -9px;
-    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em;
-    text-transform: uppercase; color: #818cf8;
-    background: #0e1630; padding: 0 5px; border-radius: 4px;
     pointer-events: none;
   }
   .form-select {
@@ -428,99 +417,156 @@ const globalStyles = `
     display: flex; align-items: center; gap: 6px;
   }
 
-  /* ── Success Popup Overlay ── */
+  /* ─────────────────────────────────────────
+     SUCCESS POPUP — fully responsive
+  ───────────────────────────────────────── */
   .popup-overlay {
     position: fixed; inset: 0; z-index: 1000;
-    background: rgba(4, 8, 20, 0.85);
-    backdrop-filter: blur(10px);
+    background: rgba(4, 8, 20, 0.88);
+    backdrop-filter: blur(12px);
     display: flex; align-items: center; justify-content: center;
     padding: 1rem;
     animation: overlay-in 0.3s ease both;
   }
+
   .popup-card {
     background: linear-gradient(145deg, #0d1835, #0a122a);
-    border: 1px solid rgba(99,102,241,0.4);
+    border: 1px solid rgba(99,102,241,0.35);
     border-radius: 24px;
-    padding: 2.5rem 2rem;
-    max-width: 460px; width: 100%;
+    /* clamp: 1.25rem on tiny screens → 2.5rem on desktop */
+    padding: clamp(1.5rem, 6vw, 2.5rem) clamp(1.25rem, 5vw, 2rem);
+    max-width: 440px;
+    width: 100%;
     text-align: center;
     position: relative; overflow: hidden;
-    animation: popup-in 0.5s cubic-bezier(.34,1.56,.64,1) both;
-    box-shadow: 0 0 80px rgba(99,102,241,0.2), 0 30px 60px rgba(0,0,0,0.5);
+    animation: popup-in 0.45s cubic-bezier(.34,1.56,.64,1) both;
+    box-shadow: 0 0 80px rgba(99,102,241,0.18), 0 24px 56px rgba(0,0,0,0.55);
+    box-sizing: border-box;
   }
+
+  /* top shimmer line */
   .popup-card::before {
     content: '';
     position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, #6366f1, #38bdf8, transparent);
   }
+  /* inner glow */
   .popup-card::after {
     content: '';
     position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 65%);
+    background: radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.1) 0%, transparent 65%);
   }
+
+  /* check icon */
   .popup-icon-wrap {
-    width: 80px; height: 80px; margin: 0 auto 1.5rem;
+    width: clamp(56px, 16vw, 72px);
+    height: clamp(56px, 16vw, 72px);
+    margin: 0 auto 1.25rem;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(52,211,153,0.1));
-    border: 2px solid rgba(52,211,153,0.4);
+    background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(52,211,153,0.08));
+    border: 2px solid rgba(52,211,153,0.38);
     display: flex; align-items: center; justify-content: center;
     animation: float 3s ease-in-out infinite;
-    box-shadow: 0 0 30px rgba(52,211,153,0.15);
+    box-shadow: 0 0 28px rgba(52,211,153,0.14);
+    flex-shrink: 0;
   }
   .popup-icon-wrap svg {
-    width: 40px; height: 40px;
+    width: clamp(28px, 8vw, 36px);
+    height: clamp(28px, 8vw, 36px);
   }
   .popup-check-circle {
-    stroke: #34d399;
-    stroke-width: 3;
-    fill: none;
-    stroke-dasharray: 80;
-    stroke-dashoffset: 0;
+    stroke: #34d399; stroke-width: 3; fill: none;
+    stroke-dasharray: 80; stroke-dashoffset: 0;
     animation: check-draw 0.6s 0.2s cubic-bezier(.22,1,.36,1) both;
   }
+
+  /* title */
   .popup-title {
     font-family: 'Trebuchet MS', sans-serif;
-    font-size: 1.5rem; font-weight: 900;
+    font-size: clamp(1.15rem, 5vw, 1.5rem);
+    font-weight: 900;
     background: linear-gradient(90deg, #6ee7b7, #34d399, #67e8f9);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 0.75rem;
+    line-height: 1.2;
   }
+
+  /* body text */
   .popup-body {
-    color: #94a3b8; font-size: 0.9rem; line-height: 1.7;
+    color: #94a3b8;
+    font-size: clamp(0.8rem, 3.5vw, 0.9rem);
+    line-height: 1.7;
     margin-bottom: 0.5rem;
   }
-  .popup-email-chip {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(56,189,248,0.1);
-    border: 1px solid rgba(56,189,248,0.3);
-    border-radius: 999px; padding: 6px 16px;
-    font-size: 0.8rem; color: #67e8f9; font-weight: 600;
-    margin: 0.75rem 0 1.5rem;
+
+  /* ── email block: stack label + address vertically so nothing overflows ── */
+  .popup-email-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: rgba(56,189,248,0.07);
+    border: 1px solid rgba(56,189,248,0.22);
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin: 0.9rem 0 1.25rem;
+    width: 100%;
+    box-sizing: border-box;
   }
+  .popup-email-label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: #38bdf8;
+    font-family: 'Trebuchet MS', sans-serif;
+    white-space: nowrap;
+  }
+  .popup-email-label span { font-size: 0.9rem; }
+  /* address wraps naturally and never overflows */
+  .popup-email-address {
+    font-size: clamp(0.75rem, 3.2vw, 0.88rem);
+    font-weight: 700; color: #67e8f9;
+    word-break: break-all;
+    text-align: center;
+    line-height: 1.45;
+    font-family: 'Trebuchet MS', sans-serif;
+  }
+
   .popup-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(99,102,241,0.3), transparent);
-    margin: 1.2rem 0;
+    background: linear-gradient(90deg, transparent, rgba(99,102,241,0.28), transparent);
+    margin: 1rem 0;
   }
+
   .popup-note {
-    font-size: 0.78rem; color: #64748b; line-height: 1.6;
+    font-size: clamp(0.7rem, 2.8vw, 0.78rem);
+    color: #64748b; line-height: 1.65;
   }
+
+  /* full-width button on mobile */
   .popup-close-btn {
-    margin-top: 1.5rem;
-    padding: 0.75rem 2.5rem;
-    border-radius: 12px;
+    display: block;
+    width: 100%;
+    margin-top: 1.4rem;
+    padding: 0.85rem 0;
+    border-radius: 14px;
     background: linear-gradient(135deg, #4f46e5, #6366f1);
-    border: none; color: white;
+    border: none; color: #fff;
     font-family: 'Trebuchet MS', sans-serif;
-    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em;
+    font-size: clamp(0.78rem, 3vw, 0.85rem);
+    font-weight: 700; letter-spacing: 0.1em;
     text-transform: uppercase; cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
   }
-  .popup-close-btn:hover { transform: scale(1.04); box-shadow: 0 0 24px rgba(99,102,241,0.4); }
+  .popup-close-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 28px rgba(99,102,241,0.45);
+  }
+  .popup-close-btn:active { transform: scale(0.98); }
 `;
 
-// ─── Form fields config (no isAcesMember, receipt always shown) ───────────────
+// ─── Form fields config ───────────────────────────────────────────────────────
 
 const formFields: FormField[] = [
   { name: 'firstName', label: 'First Name', type: 'text', required: true },
@@ -552,15 +598,11 @@ const formFields: FormField[] = [
 const initialFormData: FormData = {
   firstName: '', lastName: '', email: '', mobile: '', gender: '',
   instituteName: '', type: '', course: '', courseSpecialization: '',
-  graduationYear: '',
-  receipt: null,
+  graduationYear: '', receipt: null,
 };
-
-// ─── Drive / YouTube link validator ──────────────────────────────────────────
 
 const ALLOWED_LINK_PATTERNS = [
   /^https:\/\/(drive|docs)\.google\.com\//i,
-  /^https:\/\/docs\.google\.com\//i,
   /^https:\/\/onedrive\.live\.com\//i,
   /^https:\/\/1drv\.ms\//i,
   /^https:\/\/youtu\.be\//i,
@@ -568,10 +610,8 @@ const ALLOWED_LINK_PATTERNS = [
   /^https:\/\/[a-z0-9-]+\.sharepoint\.com\//i,
 ];
 
-const isValidDriveLink = (url: string): boolean => {
-  if (!url.trim()) return false;
-  return ALLOWED_LINK_PATTERNS.some((pattern) => pattern.test(url.trim()));
-};
+const isValidDriveLink = (url: string): boolean =>
+  Boolean(url.trim()) && ALLOWED_LINK_PATTERNS.some((p) => p.test(url.trim()));
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -597,29 +637,21 @@ const RegistrationForm: React.FC = () => {
   const [pptLinkError, setPptLinkError] = useState<string>('');
   const [videoLinkError, setVideoLinkError] = useState<string>('');
 
-  // ── Validation helpers ──
-
   const fail = (msg: string): false => {
     setSubmitMessage({ type: 'error', text: msg });
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return false;
   };
 
-  const validateEmail = (email: string): boolean =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  const validateMobile = (mobile: string): boolean =>
-    /^\d{10}$/.test(mobile);
-
-  const validateGraduationYear = (year: string): boolean => {
+  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validateMobile = (mobile: string) => /^\d{10}$/.test(mobile);
+  const validateGraduationYear = (year: string) => {
     const y = parseInt(year, 10);
     return !isNaN(y) && y >= 2024 && y <= 2035;
   };
 
   const validateForm = (): boolean => {
     if (!teamName.trim()) return fail('Please enter a team name.');
-
-    // ── Leader validation ──
     if (!leaderData.firstName.trim()) return fail("Please enter the team leader's first name.");
     if (!leaderData.lastName.trim()) return fail("Please enter the team leader's last name.");
     if (!validateEmail(leaderData.email)) return fail('Please enter a valid email for the team leader.');
@@ -631,7 +663,6 @@ const RegistrationForm: React.FC = () => {
     if (!leaderData.courseSpecialization.trim()) return fail("Please enter the team leader's course specialization.");
     if (!validateGraduationYear(leaderData.graduationYear)) return fail('Please enter a valid graduation year (2024–2035) for the team leader.');
 
-    // ── Team members validation ──
     for (let i = 0; i < teamMembersData.length; i++) {
       const m = teamMembersData[i];
       const label = `team member ${i + 2}`;
@@ -647,10 +678,7 @@ const RegistrationForm: React.FC = () => {
       if (!validateGraduationYear(m.graduationYear)) return fail(`Valid graduation year required for ${label}.`);
     }
 
-    // ── Payment ──
     if (!paymentFile) return fail('Please upload the payment screenshot.');
-
-    // ── Drive links ──
     if (!pptLink.trim()) return fail('Please provide your PPT Drive link.');
     if (!isValidDriveLink(pptLink)) {
       setPptLinkError('Only Google Drive, OneDrive, or SharePoint links are accepted.');
@@ -661,42 +689,36 @@ const RegistrationForm: React.FC = () => {
       setVideoLinkError('Only Google Drive, YouTube (unlisted), or OneDrive links are accepted.');
       return fail('Video link must be a valid Google Drive, YouTube, or OneDrive URL.');
     }
-
     return true;
   };
 
-  // ── File change handlers ──
-
-  const handlePaymentFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handlePaymentFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setPaymentFile(file);
     setFilePreview((prev) => ({ ...prev, paymentScreenshot: URL.createObjectURL(file) }));
   };
 
-  const handleLeaderChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+  const handleLeaderChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setLeaderData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLeaderFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleLeaderFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setLeaderData((prev) => ({ ...prev, receipt: file }));
     setFilePreview((prev) => ({ ...prev, leader: URL.createObjectURL(file) }));
   };
 
-  const handleTeamSizeChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+  const handleTeamSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const size = parseInt(e.target.value, 10);
     setTeamSize(size);
     setTeamMembersData(Array(size - 1).fill(null).map(() => ({ ...initialFormData })));
     setFilePreview((prev) => ({ ...prev, members: Array(size - 1).fill(null) }));
   };
 
-  const handleTeamMemberChange = (
-    index: number,
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ): void => {
+  const handleTeamMemberChange = (index: number, e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setTeamMembersData((prev) => {
       const updated = [...prev];
@@ -705,10 +727,7 @@ const RegistrationForm: React.FC = () => {
     });
   };
 
-  const handleTeamMemberFileChange = (
-    index: number,
-    e: React.ChangeEvent<HTMLInputElement>
-  ): void => {
+  const handleTeamMemberFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setTeamMembersData((prev) => {
@@ -723,9 +742,7 @@ const RegistrationForm: React.FC = () => {
     });
   };
 
-  // ── Submit ──
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setPptLinkError('');
     setVideoLinkError('');
@@ -736,28 +753,18 @@ const RegistrationForm: React.FC = () => {
 
     try {
       const paymentScreenshotUrl = await uploadToCloudinary(paymentFile!);
-
-      const leaderReceiptUrl = leaderData.receipt instanceof File
-        ? await uploadToCloudinary(leaderData.receipt)
-        : '';
-
+      const leaderReceiptUrl = leaderData.receipt instanceof File ? await uploadToCloudinary(leaderData.receipt) : '';
       const memberReceiptUrls: string[] = [];
       for (const member of teamMembersData) {
-        if (member.receipt instanceof File) {
-          memberReceiptUrls.push(await uploadToCloudinary(member.receipt));
-        } else {
-          memberReceiptUrls.push('');
-        }
+        memberReceiptUrls.push(member.receipt instanceof File ? await uploadToCloudinary(member.receipt) : '');
       }
 
       const payload = {
-        teamName,
-        teamSize,
+        teamName, teamSize,
         leader: { ...leaderData, receipt: leaderReceiptUrl },
         teamMembers: teamMembersData.map((m, i) => ({ ...m, receipt: memberReceiptUrls[i] })),
         paymentScreenshot: paymentScreenshotUrl,
-        pptLink,
-        videoLink,
+        pptLink, videoLink,
         registrationStatus: 'pending',
       };
 
@@ -775,22 +782,17 @@ const RegistrationForm: React.FC = () => {
 
       await response.json();
 
-      // Non-blocking email
       fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          teamName,
-          teamSize,
+          teamName, teamSize,
           leader: { ...leaderData, receipt: leaderReceiptUrl },
           teamMembers: teamMembersData.map((m, i) => ({ ...m, receipt: memberReceiptUrls[i] })),
         }),
       }).catch((err) => console.error('Email send failed:', err));
 
-      // Store email for popup display
       setRegisteredEmail(leaderData.email);
-
-      // Reset form
       setTeamName('');
       setLeaderData(initialFormData);
       setTeamMembersData([{ ...initialFormData }]);
@@ -798,23 +800,16 @@ const RegistrationForm: React.FC = () => {
       setPptLink('');
       setVideoLink('');
       setFilePreview({ leader: null, members: Array(3).fill(null), paymentScreenshot: null });
-
-      // Show success popup
       setShowSuccessPopup(true);
 
     } catch (error) {
       const err = error as Error;
-      setSubmitMessage({
-        type: 'error',
-        text: err.message || 'There was an error submitting your registration. Please try again.',
-      });
+      setSubmitMessage({ type: 'error', text: err.message || 'There was an error submitting your registration. Please try again.' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  // ── Render field ──
 
   const renderFormField = (
     field: FormField,
@@ -829,17 +824,8 @@ const RegistrationForm: React.FC = () => {
     if (field.type === 'select') {
       return (
         <div className="select-wrapper">
-          <select
-            id={id}
-            name={field.name}
-            value={value as string}
-            onChange={handleChange}
-            required={field.required}
-            className="form-select"
-          >
-            {field.options?.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
+          <select id={id} name={field.name} value={value as string} onChange={handleChange} required={field.required} className="form-select">
+            {field.options?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </div>
       );
@@ -848,37 +834,17 @@ const RegistrationForm: React.FC = () => {
     if (field.type === 'file') {
       return (
         <div className="file-upload-container">
-          <input
-            id={id}
-            type="file"
-            name={field.name}
-            onChange={handleFileChange as React.ChangeEventHandler<HTMLInputElement>}
-            accept={field.accept}
-            className="file-input"
-          />
+          <input id={id} type="file" name={field.name} onChange={handleFileChange as React.ChangeEventHandler<HTMLInputElement>} accept={field.accept} className="file-input" />
           {previewSrc && <img src={previewSrc} alt="Receipt Preview" className="preview-image" />}
-          {value instanceof File && (
-            <span className="upload-status">📎 {(value as File).name} selected</span>
-          )}
+          {value instanceof File && <span className="upload-status">📎 {(value as File).name} selected</span>}
         </div>
       );
     }
 
     return (
-      <input
-        id={id}
-        type={field.type}
-        name={field.name}
-        value={value as string}
-        onChange={handleChange}
-        required={field.required}
-        className="form-input"
-        placeholder={field.label}
-      />
+      <input id={id} type={field.type} name={field.name} value={value as string} onChange={handleChange} required={field.required} className="form-input" placeholder={field.label} />
     );
   };
-
-  // ── JSX ──
 
   return (
     <>
@@ -888,26 +854,30 @@ const RegistrationForm: React.FC = () => {
       {showSuccessPopup && (
         <div className="popup-overlay" onClick={() => setShowSuccessPopup(false)}>
           <div className="popup-card" onClick={(e) => e.stopPropagation()}>
+
+            {/* Check icon */}
             <div className="popup-icon-wrap">
               <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="22" cy="22" r="20" stroke="#34d399" strokeWidth="2.5" opacity="0.4" />
-                <polyline
-                  className="popup-check-circle"
-                  points="12,22 19,30 32,14"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+                <polyline className="popup-check-circle" points="12,22 19,30 32,14" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
 
             <div className="popup-title">Registration Successful! 🎉</div>
+
             <p className="popup-body">
-              Your team has been registered for <strong style={{ color: '#c4b5fd' }}>Ignition HackVerse 2026</strong>.
-              Your registration is currently <strong style={{ color: '#fbbf24' }}>pending verification</strong>.
+              Your team has been registered for{' '}
+              <strong style={{ color: '#c4b5fd' }}>Ignition HackVerse 2026</strong>.
+              Your registration is currently{' '}
+              <strong style={{ color: '#fbbf24' }}>pending verification</strong>.
             </p>
 
-            <div className="popup-email-chip">
-              ✉️ Confirmation email sent to: <strong>{registeredEmail}</strong>
+            {/* Email block — stacked, never overflows */}
+            <div className="popup-email-block">
+              <div className="popup-email-label">
+                <span>✉️</span> Confirmation email sent to
+              </div>
+              <div className="popup-email-address">{registeredEmail}</div>
             </div>
 
             <div className="popup-divider" />
@@ -930,34 +900,20 @@ const RegistrationForm: React.FC = () => {
         <div className="rform-orb-2" />
 
         <div className="rform-inner">
-          {/* Header */}
           <div className="rform-header">
             <div className="rform-header-badge">
               <span className="dot" />
               Ignition HackVerse 2026
             </div>
             <h1>Team Registration</h1>
-            <p style={{
-              fontFamily: 'Trebuchet MS, sans-serif',
-              color: 'cyan',
-              fontSize: '20px',
-              fontWeight: 800,
-              letterSpacing: '-0.01em',
-              lineHeight: 1.2,
-              marginBottom: '0.75rem',
-            }}>
+            <p style={{ fontFamily: 'Trebuchet MS, sans-serif', color: 'cyan', fontSize: '20px', fontWeight: 800, letterSpacing: '-0.01em', lineHeight: 1.2, marginBottom: '0.75rem' }}>
               Register your team for the upcoming hackathon event!
             </p>
           </div>
 
-          {/* Alert */}
           {submitMessage.text && (
-            <div className={`rform-alert ${submitMessage.type}`}>
-              {submitMessage.text}
-            </div>
+            <div className={`rform-alert ${submitMessage.type}`}>{submitMessage.text}</div>
           )}
-
-          {/* Uploading indicator */}
           {isSubmitting && (
             <div className="rform-alert" style={{ background: 'rgba(99,102,241,0.1)', borderColor: 'rgba(99,102,241,0.4)', color: '#a5b4fc' }}>
               ⏳ Uploading files and submitting registration... please wait.
@@ -982,14 +938,7 @@ const RegistrationForm: React.FC = () => {
                 </div>
                 <div className="form-group">
                   <label htmlFor="teamName">Team Name<span className="required">*</span></label>
-                  <input
-                    id="teamName"
-                    type="text"
-                    value={teamName}
-                    onChange={(e) => setTeamName(e.target.value)}
-                    className="form-input"
-                    placeholder="Enter your team name"
-                  />
+                  <input id="teamName" type="text" value={teamName} onChange={(e) => setTeamName(e.target.value)} className="form-input" placeholder="Enter your team name" />
                 </div>
               </div>
             </div>
@@ -997,13 +946,9 @@ const RegistrationForm: React.FC = () => {
             {/* Project Submission */}
             <div className="rform-section project-section">
               <h2>Project Submission</h2>
-
               <div className="selection-criteria">
                 <h3>Selection Criteria</h3>
-                <p>
-                  In case of excessive registrations, an elimination round will be conducted.
-                  Please share your project presentation and video walkthrough. Selection will be based on:
-                </p>
+                <p>In case of excessive registrations, an elimination round will be conducted. Please share your project presentation and video walkthrough. Selection will be based on:</p>
                 <ul>
                   <li><strong>Clarity and Understanding</strong></li>
                   <li><strong>Feasibility of Solution</strong></li>
@@ -1013,10 +958,7 @@ const RegistrationForm: React.FC = () => {
                   <li><strong>Scalability and Future Scope</strong></li>
                   <li><strong>Presentation and Structure</strong></li>
                 </ul>
-                <p>
-                  <strong>Note:</strong> The first round is purely for screening purposes. Your main problem
-                  statement for the hackathon will be different and provided 16 hours before the event.
-                </p>
+                <p><strong>Note:</strong> The first round is purely for screening purposes. Your main problem statement for the hackathon will be different and provided 16 hours before the event.</p>
                 <p><strong>If you are not selected for Round 2, 50% of your amount will be refunded.</strong></p>
                 <p>Ensure both Drive links are publicly accessible (view access for anyone with the link).</p>
               </div>
@@ -1030,30 +972,8 @@ const RegistrationForm: React.FC = () => {
                       <div className="link-card-sublabel">Google Drive / OneDrive / Slides</div>
                     </div>
                   </div>
-                  <input
-                    type="url"
-                    value={pptLink}
-                    onChange={(e) => {
-                      setPptLink(e.target.value);
-                      if (pptLinkError && isValidDriveLink(e.target.value)) setPptLinkError('');
-                    }}
-                    onBlur={() => {
-                      if (pptLink && !isValidDriveLink(pptLink))
-                        setPptLinkError('Only Google Drive, OneDrive, or SharePoint links accepted.');
-                      else setPptLinkError('');
-                    }}
-                    className="link-input-field"
-                    placeholder="https://drive.google.com/..."
-                  />
-                  {pptLinkError
-                    ? <div className="link-error-msg">⚠ {pptLinkError}</div>
-                    : (
-                      <div className="link-hint">
-                        <div className="link-hint-dot" />
-                        Share your project presentation slides
-                      </div>
-                    )
-                  }
+                  <input type="url" value={pptLink} onChange={(e) => { setPptLink(e.target.value); if (pptLinkError && isValidDriveLink(e.target.value)) setPptLinkError(''); }} onBlur={() => { if (pptLink && !isValidDriveLink(pptLink)) setPptLinkError('Only Google Drive, OneDrive, or SharePoint links accepted.'); else setPptLinkError(''); }} className="link-input-field" placeholder="https://drive.google.com/..." />
+                  {pptLinkError ? <div className="link-error-msg">⚠ {pptLinkError}</div> : <div className="link-hint"><div className="link-hint-dot" />Share your project presentation slides</div>}
                 </div>
 
                 <div className={`link-input-card video-card${videoLinkError ? ' invalid-link' : ''}`}>
@@ -1064,30 +984,8 @@ const RegistrationForm: React.FC = () => {
                       <div className="link-card-sublabel">Google Drive / YouTube (unlisted)</div>
                     </div>
                   </div>
-                  <input
-                    type="url"
-                    value={videoLink}
-                    onChange={(e) => {
-                      setVideoLink(e.target.value);
-                      if (videoLinkError && isValidDriveLink(e.target.value)) setVideoLinkError('');
-                    }}
-                    onBlur={() => {
-                      if (videoLink && !isValidDriveLink(videoLink))
-                        setVideoLinkError('Only Google Drive, YouTube, or OneDrive links accepted.');
-                      else setVideoLinkError('');
-                    }}
-                    className="link-input-field video-field"
-                    placeholder="https://drive.google.com/..."
-                  />
-                  {videoLinkError
-                    ? <div className="link-error-msg">⚠ {videoLinkError}</div>
-                    : (
-                      <div className="link-hint">
-                        <div className="link-hint-dot blue" />
-                        Share your recorded video walkthrough
-                      </div>
-                    )
-                  }
+                  <input type="url" value={videoLink} onChange={(e) => { setVideoLink(e.target.value); if (videoLinkError && isValidDriveLink(e.target.value)) setVideoLinkError(''); }} onBlur={() => { if (videoLink && !isValidDriveLink(videoLink)) setVideoLinkError('Only Google Drive, YouTube, or OneDrive links accepted.'); else setVideoLinkError(''); }} className="link-input-field video-field" placeholder="https://drive.google.com/..." />
+                  {videoLinkError ? <div className="link-error-msg">⚠ {videoLinkError}</div> : <div className="link-hint"><div className="link-hint-dot blue" />Share your recorded video walkthrough</div>}
                 </div>
               </div>
             </div>
@@ -1097,27 +995,11 @@ const RegistrationForm: React.FC = () => {
               <h2>Team Leader Information</h2>
               <div className="form-row">
                 {formFields.map((field) => (
-                  <div
-                    className="form-group"
-                    key={field.name}
-                    style={field.type === 'file' ? { gridColumn: 'span 2' } : undefined}
-                  >
-                    <label htmlFor={field.name}>
-                      {field.label}{field.required && <span className="required">*</span>}
-                    </label>
+                  <div className="form-group" key={field.name} style={field.type === 'file' ? { gridColumn: 'span 2' } : undefined}>
+                    <label htmlFor={field.name}>{field.label}{field.required && <span className="required">*</span>}</label>
                     {field.type === 'file'
-                      ? renderFormField(
-                          field,
-                          leaderData.receipt,
-                          handleLeaderChange,
-                          handleLeaderFileChange,
-                          filePreview.leader,
-                        )
-                      : renderFormField(
-                          field,
-                          leaderData[field.name] as string,
-                          handleLeaderChange,
-                        )
+                      ? renderFormField(field, leaderData.receipt, handleLeaderChange, handleLeaderFileChange, filePreview.leader)
+                      : renderFormField(field, leaderData[field.name] as string, handleLeaderChange)
                     }
                   </div>
                 ))}
@@ -1130,31 +1012,11 @@ const RegistrationForm: React.FC = () => {
                 <h2>Team Member {index + 2} Information</h2>
                 <div className="form-row">
                   {formFields.map((field) => (
-                    <div
-                      className="form-group"
-                      key={`${field.name}-${index}`}
-                      style={field.type === 'file' ? { gridColumn: 'span 2' } : undefined}
-                    >
-                      <label htmlFor={`${field.name}-${index}`}>
-                        {field.label}{field.required && <span className="required">*</span>}
-                      </label>
+                    <div className="form-group" key={`${field.name}-${index}`} style={field.type === 'file' ? { gridColumn: 'span 2' } : undefined}>
+                      <label htmlFor={`${field.name}-${index}`}>{field.label}{field.required && <span className="required">*</span>}</label>
                       {field.type === 'file'
-                        ? renderFormField(
-                            field,
-                            member.receipt,
-                            (e) => handleTeamMemberChange(index, e),
-                            (e) => handleTeamMemberFileChange(index, e),
-                            filePreview.members[index],
-                            index,
-                          )
-                        : renderFormField(
-                            field,
-                            member[field.name] as string,
-                            (e) => handleTeamMemberChange(index, e),
-                            undefined,
-                            undefined,
-                            index,
-                          )
+                        ? renderFormField(field, member.receipt, (e) => handleTeamMemberChange(index, e), (e) => handleTeamMemberFileChange(index, e), filePreview.members[index], index)
+                        : renderFormField(field, member[field.name] as string, (e) => handleTeamMemberChange(index, e), undefined, undefined, index)
                       }
                     </div>
                   ))}
@@ -1173,27 +1035,11 @@ const RegistrationForm: React.FC = () => {
                 </div>
                 <div style={{ flex: 1, minWidth: 220 }}>
                   <div className="form-group">
-                    <label htmlFor="paymentScreenshot">
-                      Upload Payment Screenshot<span className="required">*</span>
-                    </label>
+                    <label htmlFor="paymentScreenshot">Upload Payment Screenshot<span className="required">*</span></label>
                     <div className="file-upload-container">
-                      <input
-                        id="paymentScreenshot"
-                        type="file"
-                        onChange={handlePaymentFileChange}
-                        accept="image/*"
-                        className="file-input"
-                      />
-                      {filePreview.paymentScreenshot && (
-                        <img
-                          src={filePreview.paymentScreenshot}
-                          alt="Payment Screenshot"
-                          className="preview-image"
-                        />
-                      )}
-                      {paymentFile && (
-                        <span className="upload-status">📎 {paymentFile.name} selected</span>
-                      )}
+                      <input id="paymentScreenshot" type="file" onChange={handlePaymentFileChange} accept="image/*" className="file-input" />
+                      {filePreview.paymentScreenshot && <img src={filePreview.paymentScreenshot} alt="Payment Screenshot" className="preview-image" />}
+                      {paymentFile && <span className="upload-status">📎 {paymentFile.name} selected</span>}
                     </div>
                   </div>
                 </div>
