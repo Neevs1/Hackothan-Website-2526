@@ -1,35 +1,34 @@
 'use client'
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
-import { image } from 'motion/react-client';
+
 const goldSponsors = [
-   { name: 'Sponsor 1', image: '/Redbull.png' },
+  { name: 'Sponsor 1', image: '/Redbull.png' },
   { name: 'Sponsor 2', image: '/algorand_full_logo_white.png' },
   { name: 'Sponsor 3', image: '/sinarmas.png' },
-  {name:'Sponsor 4',image:'/vulnuris.webp'}
+  { name: 'Sponsor 4', image: '/vulnuris.webp' },
 ];
 
-/*const silverSponsors = [
-  ,
- /* { name: 'Sponsor 4', image: '/sponser4.jpg' },
-  { name: 'Sponsor 5', image: '/sponser5.png' },
-]; */
-
-/*const communityPartners = [
- 
-];*/
-
-const goldHover    = { glow: 'rgba(234,179,8,0.55)',   bg: 'cyan',   border: 'rgba(234,179,8,0.85)'   };
-const silverHover  = { glow: 'rgba(148,163,184,0.45)', bg: 'cyan', border: 'rgba(148,163,184,0.75)' };
-const partnerHover = { glow: 'rgba(34,211,238,0.4)',   bg: 'rgba(34,211,238,0.06)',  border: 'rgba(34,211,238,0.75)'  };
+const goldHover    = { glow: 'rgba(234,179,8,0.35)',   bg: 'rgba(234,179,8,0.07)',   border: 'rgba(234,179,8,0.7)'   };
+const silverHover  = { glow: 'rgba(148,163,184,0.3)',  bg: 'rgba(148,163,184,0.06)', border: 'rgba(148,163,184,0.6)' };
+const partnerHover = { glow: 'rgba(34,211,238,0.3)',   bg: 'rgba(34,211,238,0.06)',  border: 'rgba(34,211,238,0.6)'  };
 
 const css = `
-  .sponsors-section * { box-sizing: border-box; }
-
-  .sg-grid {
+  .sg-gold {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .sg-silver {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: 20px;
+  }
+  .sg-community {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 66.66%;
+    margin: 0 auto;
   }
 
   .sponsor-card {
@@ -37,220 +36,342 @@ const css = `
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 14px;
+    border-radius: 16px;
     cursor: pointer;
     overflow: hidden;
     aspect-ratio: 16 / 6;
     width: 100%;
-    border: 1px solid rgba(255,255,255,0.07);
-    background: rgba(255,255,255,0.03);
-    box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+    padding: 0;
+    /* All transitions use the same easing curve */
     transition:
-      border-color 0.4s ease,
-      background 0.4s ease,
-      box-shadow 0.4s ease,
-      opacity 0.65s ease,
-      transform 0.65s ease;
+      border 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .sponsor-card:hover {
-    border-color: rgba(129,140,248,0.55);
-    background: radial-gradient(ellipse at 50% 110%, rgba(99,102,241,0.18) 0%, rgba(10,13,28,0.95) 70%);
-    box-shadow: 0 0 40px 2px rgba(99,102,241,0.25), inset 0 1px 0 rgba(255,255,255,0.07);
-  }
-
-  .card-shimmer {
+  /* Overlay that fades in to add inner depth on hover */
+  .sponsor-card::before {
+    content: '';
     position: absolute;
-    top: 0; left: 20%; right: 20%; height: 1px;
-    background: transparent;
-    transition: background 0.4s ease;
+    inset: 0;
+    border-radius: 16px;
+    background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.07) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 1;
   }
-  .sponsor-card:hover .card-shimmer {
-    background: linear-gradient(90deg, transparent, rgba(129,140,248,0.6), transparent);
+
+  .sponsor-card:hover::before {
+    opacity: 1;
   }
 
   .sponsor-card img {
-    max-width: 52%;
-    max-height: 60%;
+    max-width: 55%;
+    max-height: 65%;
     width: auto;
     height: auto;
     object-fit: contain;
     display: block;
     pointer-events: none;
-    filter: brightness(0.8) saturate(0.7);
-    transition: filter 0.4s ease, transform 0.4s ease;
+    position: relative;
+    z-index: 2;
+    transition:
+      filter 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
+
   .sponsor-card:hover img {
-    filter: brightness(1.15) saturate(1.1) drop-shadow(0 0 10px rgba(255,255,255,0.15));
     transform: scale(1.05);
+    filter: brightness(1.15) saturate(1.1) drop-shadow(0 0 10px rgba(255,255,255,0.18));
   }
 
-  .become-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 11px 28px; border-radius: 999px;
-    border: 1px solid rgba(99,102,241,0.45);
-    background: rgba(99,102,241,0.10);
-    color: #c7d2fe; font-weight: 600; font-size: 14px;
-    cursor: pointer; letter-spacing: 0.3px;
-    transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, color 0.35s ease;
-    font-family: 'Trebuchet MS', sans-serif;
+  /* Top-edge shimmer line */
+  .sponsor-card .shimmer {
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .become-btn:hover {
-    background: rgba(99,102,241,0.22);
-    border-color: rgba(129,140,248,0.75);
-    box-shadow: 0 0 28px rgba(99,102,241,0.35);
+
+  .sponsor-card:hover .shimmer {
+    opacity: 1;
+  }
+
+  /* Sponsor button hover */
+  .sponsor-btn {
+    padding: 10px 28px;
+    border-radius: 999px;
+    border: 1px solid rgba(99,102,241,0.5);
+    background: rgba(99,102,241,0.12);
     color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    transition:
+      background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  @media (max-width: 900px) {
-    .sg-grid { grid-template-columns: repeat(2, 1fr); }
+  .sponsor-btn:hover {
+    background: rgba(99,102,241,0.28);
+    border-color: rgba(99,102,241,0.85);
+    box-shadow: 0 0 24px rgba(99,102,241,0.35);
+    transform: translateY(-2px);
   }
+
+  .sponsor-btn:active {
+    transform: translateY(0px);
+    transition-duration: 0.1s;
+  }
+
+  /* ── Tablet ── */
+  @media (max-width: 900px) {
+    .sg-silver { grid-template-columns: repeat(2, 1fr); }
+    .sg-community { width: 80%; }
+    .sponsor-card { aspect-ratio: 16 / 7; }
+    .sponsor-card img { max-width: 60%; max-height: 70%; }
+  }
+
+  /* ── Mobile ── */
   @media (max-width: 600px) {
-    .sg-grid { grid-template-columns: 1fr; gap: 10px; }
+    .sg-gold, .sg-silver, .sg-community {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      width: 100%;
+    }
     .sponsor-card { aspect-ratio: 16 / 6; }
+    .sponsor-card img { max-width: 55%; max-height: 65%; }
   }
 `;
 
-function SponsorCard({ sponsor, visible, delay = 0 }: { sponsor: { name: string; image: string }; visible: boolean; delay?: number }) {
+function SectionLabel({ label, color }: { label: string; color: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
+      <span style={{
+        fontSize: '11px', fontWeight: 700, letterSpacing: '3.5px',
+        textTransform: 'uppercase', fontFamily: "'Trebuchet MS', sans-serif",
+        color, whiteSpace: 'nowrap',
+      }}>
+        {label}
+      </span>
+      <div style={{ flex: 1, height: '1px', background: `linear-gradient(90deg, ${color}55, transparent)` }} />
+    </div>
+  );
+}
+
+function SponsorCard({
+  sponsor, hoverStyle, visible, delay = 0,
+}: {
+  sponsor: { name: string; image: string };
+  hoverStyle: { glow: string; bg: string; border: string };
+  visible: boolean;
+  delay?: number;
+}) {
+  const [hovered, setHovered] = useState(false);
+
   return (
     <div
       className="sponsor-card"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
+        border: `1px solid ${hovered ? hoverStyle.border : 'rgba(255,255,255,0.08)'}`,
+        background: hovered
+          ? hoverStyle.bg
+          : 'rgba(255,255,255,0.03)',
+        boxShadow: hovered
+          ? `0 0 40px 6px ${hoverStyle.glow}, 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)`
+          : '0 4px 20px rgba(0,0,0,0.5)',
+        /* Entry animation only — hover transitions handled by CSS class */
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(24px)',
-        transitionDelay: `${delay}ms`,
+        transform: visible ? 'translateY(0)' : 'translateY(28px)',
+        transition: `
+          border 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.6s ease ${delay}ms,
+          transform 0.6s ease ${delay}ms
+        `,
       }}
     >
-      <div className="card-shimmer" />
-      <img src={sponsor.image} alt={sponsor.name} />
+      {/* Top shimmer line — color comes from hoverStyle */}
+      <div
+        className="shimmer"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${hoverStyle.border}, transparent)`,
+        }}
+      />
+      <img
+        src={sponsor.image}
+        alt={sponsor.name}
+        style={{
+          /* base filter — hover handled by CSS */
+          filter: hovered
+            ? undefined          /* let CSS :hover rule take over */
+            : 'brightness(0.85) saturate(0.75)',
+        }}
+      />
     </div>
   );
 }
 
 export default function Sponser() {
   const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setVisible(true); },
-      { threshold: 0.08 }
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.1 }
     );
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
   }, []);
-
-  const fade = (delay = 0) => ({
-    opacity: visible ? 1 : 0,
-    transform: visible ? 'translateY(0)' : 'translateY(20px)',
-    transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms`,
-  });
 
   return (
     <>
       <style>{css}</style>
       <section
-        className="sponsors-section"
-        ref={ref}
+        ref={sectionRef}
         style={{
           width: '100%',
-          padding: 'clamp(40px, 6vw, 80px) clamp(16px, 4vw, 48px)',
-          background: 'linear-gradient(160deg, #0b0f1e 0%, #080c18 55%, #060914 100%)',
-          position: 'relative',
-          overflow: 'hidden',
+          boxSizing: 'border-box',
+          padding: 'clamp(32px, 5vw, 72px) clamp(16px, 3vw, 36px)',
+          background: 'linear-gradient(135deg, #0b0f1e 0%, #080c18 60%, #060914 100%)',
         }}
       >
-        {/* Ambient orbs */}
-        <div style={{ position: 'absolute', top: '-120px', right: '-120px', width: '420px', height: '420px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: '-100px', left: '-80px', width: '380px', height: '380px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(56,189,248,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
-        <div style={{
-          maxWidth: '1100px', margin: '0 auto',
-          padding: 'clamp(28px, 4vw, 56px) clamp(20px, 4vw, 56px)',
-          borderRadius: '20px',
-          background: 'linear-gradient(160deg, rgba(255,255,255,0.035) 0%, rgba(99,102,241,0.03) 100%)',
-          border: '1px solid rgba(99,102,241,0.16)',
-          backdropFilter: 'blur(20px)',
-          boxShadow: '0 0 120px rgba(99,102,241,0.07), inset 0 1px 0 rgba(255,255,255,0.05)',
-          position: 'relative',
-        }}>
-          {/* Top shimmer */}
-          <div style={{ position: 'absolute', top: 0, left: '15%', right: '15%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.6), rgba(56,189,248,0.35), transparent)' }} />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            padding: 'clamp(24px, 3.5vw, 52px) clamp(18px, 3.5vw, 52px) clamp(28px, 4vw, 60px)',
+            borderRadius: '24px',
+            background: 'linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(99,102,241,0.04) 100%)',
+            border: '1px solid rgba(99,102,241,0.18)',
+            backdropFilter: 'blur(16px)',
+            boxShadow: '0 0 100px rgba(99,102,241,0.09), inset 0 1px 0 rgba(255,255,255,0.06)',
+            position: 'relative',
+            overflow: 'hidden',
+            width: '100%',
+            boxSizing: 'border-box',
+            transition: 'opacity 0.8s ease, transform 0.8s ease',
+            opacity: visible ? 1 : 0,
+            transform: visible ? 'translateY(0)' : 'translateY(36px)',
+          }}
+        >
+          {/* Decorative edges */}
+          <div style={{
+            position: 'absolute', top: 0, left: '20%', right: '20%', height: '1px',
+            background: 'linear-gradient(90deg,transparent,rgba(99,102,241,0.65),rgba(56,189,248,0.45),transparent)',
+          }} />
+          <div style={{
+            position: 'absolute', top: '-80px', right: '-80px', width: '260px', height: '260px',
+            borderRadius: '50%', pointerEvents: 'none',
+            background: 'radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)',
+          }} />
+          <div style={{
+            position: 'absolute', bottom: '-80px', left: '-80px', width: '240px', height: '240px',
+            borderRadius: '50%', pointerEvents: 'none',
+            background: 'radial-gradient(circle, rgba(56,189,248,0.07) 0%, transparent 70%)',
+          }} />
 
           {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: 'clamp(32px, 4vw, 52px)', ...fade(0) }}>
+          <div style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            gap: '10px', marginBottom: 'clamp(24px, 3vw, 48px)', alignSelf: 'center',
+            opacity: visible ? 1 : 0, transition: 'opacity 0.7s ease 0.1s',
+            textAlign: 'center',
+          }}>
             <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: '8px',
-              padding: '5px 18px', borderRadius: '999px',
-              background: 'rgba(99,102,241,0.10)', border: '1px solid rgba(99,102,241,0.25)',
-              marginBottom: '16px',
+              display: 'inline-flex', alignItems: 'center', gap: '7px',
+              padding: '5px 16px', borderRadius: '999px',
+              background: 'rgba(99,102,241,0.11)', border: '1px solid rgba(99,102,241,0.28)',
+              marginBottom: '4px',
             }}>
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#6366f1', display: 'block', boxShadow: '0 0 8px #6366f1' }} />
-              <span style={{ fontSize: '10px', letterSpacing: '3px', color: '#818cf8', fontWeight: 700, fontFamily: "'Trebuchet MS', sans-serif" }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#6366f1', display: 'block' }} />
+              <span style={{ fontSize: '10px', letterSpacing: '2.5px', color: '#818cf8', fontWeight: 700, fontFamily: "'Trebuchet MS', sans-serif" }}>
                 PARTNERSHIPS
               </span>
             </div>
-
-            <h2 style={{
-              margin: '0 0 12px',
-              fontSize: 'clamp(22px, 3.5vw, 36px)',
-              fontWeight: 700,
-              fontFamily: "'Trebuchet MS', sans-serif",
-              color: '#fff',
-              lineHeight: 1.2,
+            <div style={{
+              fontSize: 'clamp(20px, 3vw, 32px)', fontWeight: 700,
+              fontFamily: "'Trebuchet MS', sans-serif", color: '#fff',
             }}>
               Our Valuable{' '}
               <span style={{
-                background: 'linear-gradient(90deg, #818cf8, #a78bfa, #67e8f9)',
+                background: 'linear-gradient(90deg, #818cf8, #a78bfa)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
               }}>
                 Sponsors
               </span>
-            </h2>
-
+            </div>
             <p style={{
-              margin: 0,
-              fontSize: 'clamp(12px, 1.5vw, 14px)',
-              color: 'rgba(255,255,255,0.35)',
-              fontFamily: "'Trebuchet MS', sans-serif",
+              fontSize: 'clamp(11px, 1.5vw, 14px)', color: 'rgba(255,255,255,0.38)',
+              fontFamily: "'Trebuchet MS', sans-serif", textAlign: 'center', margin: 0,
             }}>
               Empowering innovation through strategic collaborations.
             </p>
           </div>
 
-          {/* Sponsor Grid */}
-          <div className="sg-grid" style={fade(150)}>
-            {sponsors.map((s, i) => (
-              <SponsorCard key={i} sponsor={s} visible={visible} delay={180 + i * 70} />
-            ))}
+          {/* Gold */}
+          <div style={{ marginBottom: 'clamp(20px, 3vw, 40px)' }}>
+            <SectionLabel label="Our Sponsors" color="#eab308" />
+            <div className="sg-gold">
+              {goldSponsors.map((s, i) => (
+                <SponsorCard key={i} sponsor={s} hoverStyle={goldHover} visible={visible} delay={i * 80} />
+              ))}
+            </div>
           </div>
 
-          {/* CTA */}
-          <div style={{ textAlign: 'center', marginTop: 'clamp(36px, 5vw, 56px)', ...fade(500) }}>
-            <div style={{ width: '48px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.5), transparent)', margin: '0 auto 28px' }} />
-            <h3 style={{
-              fontSize: 'clamp(16px, 2.2vw, 24px)', fontWeight: 700,
-              fontFamily: "'Trebuchet MS', sans-serif", color: '#fff', margin: '0 0 10px',
+          {/* Contribute Section */}
+          <div style={{ marginTop: 'clamp(32px, 4vw, 60px)', textAlign: 'center' }}>
+            <h2 style={{
+              fontSize: 'clamp(18px, 2.5vw, 28px)',
+              fontWeight: 700,
+              fontFamily: "'Trebuchet MS', sans-serif",
+              color: '#fff',
+              marginBottom: '14px',
             }}>
               Want to Contribute to the{' '}
               <span style={{
                 background: 'linear-gradient(90deg, #818cf8, #a78bfa)',
-                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
               }}>
                 Hackathon?
               </span>
-            </h3>
+            </h2>
+
             <p style={{
-              fontSize: 'clamp(11px, 1.4vw, 13px)', color: 'rgba(255,255,255,0.38)',
-              fontFamily: "'Trebuchet MS', sans-serif", margin: '0 0 24px',
+              fontSize: 'clamp(11px, 1.5vw, 14px)',
+              color: 'rgba(255,255,255,0.45)',
+              fontFamily: "'Trebuchet MS', sans-serif",
+              marginBottom: '20px',
             }}>
               Partner with us to empower innovation and connect with emerging talent.
             </p>
-            <button className="become-btn">✦ Become a Sponsor</button>
+
+            <button className="sponsor-btn">
+              Become a Sponsor
+            </button>
           </div>
 
-          {/* Bottom shimmer */}
-          <div style={{ position: 'absolute', bottom: 0, left: '25%', right: '25%', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.30), transparent)' }} />
+          <div style={{
+            position: 'absolute', bottom: 0, left: '30%', right: '30%', height: '1px',
+            background: 'linear-gradient(90deg,transparent,rgba(99,102,241,0.35),transparent)',
+          }} />
         </div>
       </section>
     </>
