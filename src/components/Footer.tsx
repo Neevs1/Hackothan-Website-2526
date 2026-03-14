@@ -39,7 +39,7 @@ export default function Footer(): JSX.Element {
       className="relative text-gray-400 overflow-hidden"
       // Inline style for background avoids Tailwind's arbitrary-value
       // opacity parsing which can differ between Chromium builds
-      style={{ backgroundColor: 'rgba(4, 8, 18, 0.6)' }}
+      style={{ backgroundColor: 'rgb(4, 8, 18)' }}
     >
       {/* Top gradient border — use inline style; Tailwind bg-gradient classes
           with via-* and opacity modifiers render inconsistently across
@@ -62,7 +62,7 @@ export default function Footer(): JSX.Element {
             left: '25%',
             width: '500px',
             height: '400px',
-            background: 'rgba(49,46,129,0.2)',
+            background: 'rgba(49,46,129,0.35)',
             filter: 'blur(120px)',
             // willChange keeps the blur on the GPU compositor consistently
             willChange: 'transform',
@@ -75,7 +75,7 @@ export default function Footer(): JSX.Element {
             right: '25%',
             width: '300px',
             height: '300px',
-            background: 'rgba(88,28,135,0.15)',
+            background: 'rgba(88,28,135,0.25)',
             filter: 'blur(100px)',
             willChange: 'transform',
           }}
