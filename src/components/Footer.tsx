@@ -5,11 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { JSX } from 'react';
 
-const NAV_LINKS = [
+const NAV_LINKS: { label: string; href: string; download?: string }[] = [
   { label: 'Home', href: '#home' },
   { label: 'Prizes', href: '#prizes' },
   { label: 'Timeline', href: '#timeline' },
-  { label: 'Rulebook', href: '#rulebook' },
+  { label: 'Rulebook', href: '/rulebook.pdf', download: 'HackVerse_Rulebook.pdf' },
 ];
 
 const SOCIAL_LINKS = [
@@ -39,7 +39,7 @@ export default function Footer(): JSX.Element {
       className="relative text-gray-400 overflow-hidden"
       // Inline style for background avoids Tailwind's arbitrary-value
       // opacity parsing which can differ between Chromium builds
-      style={{ backgroundColor: 'rgba(4, 8, 18, 0.6)' }}
+      style={{ backgroundColor: 'rgb(4, 8, 18)' }}
     >
       {/* Top gradient border — use inline style; Tailwind bg-gradient classes
           with via-* and opacity modifiers render inconsistently across
@@ -62,7 +62,7 @@ export default function Footer(): JSX.Element {
             left: '25%',
             width: '500px',
             height: '400px',
-            background: 'rgba(49,46,129,0.2)',
+            background: 'rgba(49,46,129,0.35)',
             filter: 'blur(120px)',
             // willChange keeps the blur on the GPU compositor consistently
             willChange: 'transform',
@@ -75,7 +75,7 @@ export default function Footer(): JSX.Element {
             right: '25%',
             width: '300px',
             height: '300px',
-            background: 'rgba(88,28,135,0.15)',
+            background: 'rgba(88,28,135,0.25)',
             filter: 'blur(100px)',
             willChange: 'transform',
           }}
@@ -205,18 +205,39 @@ export default function Footer(): JSX.Element {
                   transition={{ duration: 0.4, delay: 0.15 + i * 0.05 }}
                   viewport={{ once: true }}
                 >
-                  <Link
-                    href={link.href}
-                    className="group flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors duration-200"
-                  >
-                    {/* Dot: scale transform on pseudo-elements is unreliable
-                        cross-browser; use a real element instead */}
-                    <span
-                      className="w-1 h-1 rounded-full transition-all duration-200 group-hover:scale-150"
-                      style={{ backgroundColor: 'rgba(99,102,241,0.5)' }}
-                    />
-                    {link.label}
-                  </Link>
+                  {link.download ? (
+                    <a
+                      href={link.href}
+                      download={link.download}
+                      className="group flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors duration-200"
+                    >
+                      <span
+                        className="w-1 h-1 rounded-full transition-all duration-200 group-hover:scale-150"
+                        style={{ backgroundColor: 'rgba(99,102,241,0.5)' }}
+                      />
+                      {link.label}
+                      <svg
+                        className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-indigo-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="group flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors duration-200"
+                    >
+                      <span
+                        className="w-1 h-1 rounded-full transition-all duration-200 group-hover:scale-150"
+                        style={{ backgroundColor: 'rgba(99,102,241,0.5)' }}
+                      />
+                      {link.label}
+                    </Link>
+                  )}
                 </motion.li>
               ))}
             </ul>
