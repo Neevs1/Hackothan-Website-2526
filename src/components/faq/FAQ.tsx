@@ -18,11 +18,11 @@ const faqData = [
   },
   {
     question: "Is there any registration fee?",
-    answer: "Registration fee is ₹1000 amd 50% refundable for teams not selected for offline round."
+    answer: "Registration fee is ₹599, non-refundable for teams not selected for offline round."
   },
   {
     question: "Whom can we contact for queries?",
-    answer: "Please reach out to the organizing team through official department communication channels."
+    answer: "Please reach out to the organizing team through official department communication channels given below."
   }
 ];
 

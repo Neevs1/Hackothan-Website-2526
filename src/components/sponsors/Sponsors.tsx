@@ -2,10 +2,10 @@
 import { useEffect, useRef, useState } from 'react';
 
 const goldSponsors = [
-  { name: 'Sponsor 1', image: '/Redbull.png' },
   { name: 'Sponsor 2', image: '/algorand_full_logo_white.png' },
   { name: 'Sponsor 3', image: '/sinarmas.png' },
   { name: 'Sponsor 4', image: '/vulnuris.webp' },
+  { name: 'Sponsor 5', image: '/weboreel.webp'}
 ];
 
 const goldHover    = { glow: 'rgba(234,179,8,0.35)',   bg: 'rgba(234,179,8,0.07)',   border: 'rgba(234,179,8,0.7)'   };
