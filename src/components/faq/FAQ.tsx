@@ -22,7 +22,7 @@ const faqData = [
   },
   {
     question: "Whom can we contact for queries?",
-    answer: "Please reach out to the organizing team through official department communication channels."
+    answer: "Please reach out to the organizing team through official department communication channels given below."
   }
 ];
 
