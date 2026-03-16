@@ -411,11 +411,11 @@ export default function Sponser() {
               ))}
             </div>
           </div>
-          {/* Bronze */}
+          {/* Community */}
           <div style={{ marginBottom: 'clamp(20px, 3vw, 40px)' }}>
-            <SectionLabel label="Community Sponsors" color="#CD7F32" />
+            <SectionLabel label="Community Sponsors" color="#22d3ee" />
             <div className="sg-community">
-             {/*{bronzeSponsors.map((s, i) => (
+             {/*{communitySponsors.map((s, i) => (
                 <SponsorCard key={i} sponsor={s} hoverStyle={bronzeHover} visible={visible} delay={i * 80} />
               ))} */} 
             </div>
