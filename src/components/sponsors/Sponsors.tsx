@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 
 const platinumSponsors = [
   { name: 'Algorand', image: '/algorand_full_logo_white.png',url:'https://www.algorand.com/' },
-  { name: 'PMTrack', image:'/PMTrack_logo-01-1.png',url:'https://www.pmtrackerp.in/' }
+  { name: 'PMTrack', image:'/PMTrack_logo-01-1.png',url:'https://www.pmtrackerp.in/' },
+  {name:'Persistent',image:'/Persistent logo 2.jpg.jpeg',url:'https://www.persistent.com'}
 ];
 
 const goldSponsors = [

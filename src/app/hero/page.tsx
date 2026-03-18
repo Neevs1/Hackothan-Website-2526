@@ -572,13 +572,13 @@ export default function HeroSection() {
                   className={`slide-up ${mounted ? "" : "opacity-0"}`}
                   style={{
                     animationDelay: "0.85s",
-                    fontSize: "1rem",
+                    fontSize: "2rem",
                     color: "#d1d5db",
                     WebkitTextFillColor: "#d1d5db",
                   }}
                 >
                   Last date to register:{" "}
-                  <span style={{ color: "#c4b5fd", WebkitTextFillColor: "#c4b5fd", fontWeight: 700 }}>
+                  <span style={{ color: "#c4b5fd", WebkitTextFillColor: "#c4b5fd", fontWeight: 700}}>
                     March 22, 2026
                   </span>
                 </p>
