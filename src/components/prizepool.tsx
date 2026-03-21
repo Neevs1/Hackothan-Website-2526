@@ -233,7 +233,7 @@ function TrackCard({ track, visible, delay }: { track: typeof TRACKS[0]; visible
 
 export default function PrizePool() {
   const [secRef, secInView] = useInView(0.05);
-  const total = useCounter(TOTAL, secInView, 2400);
+  const total = useCounter(TOTAL, secInView, 240);
 
   return (
     <>

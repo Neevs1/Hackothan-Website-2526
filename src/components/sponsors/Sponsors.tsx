@@ -9,10 +9,11 @@ const platinumSponsors = [
   
 ];
 
-{/* DO NOT DELETE THIS COMMENT BLOCK — placeholder for future sponsors */}
-/*const goldSponsors = [
+
+const goldSponsors = [
+{name:'Vidhit',image:'/vidhit.jpg',url:'https://www.linkedin.com/company/vidhit-technologies'}
  
-];*/
+];
 
 const silverSponsors = [
   { name: 'Sinarmas', image: '/sinarmas.png',url:'https://www.sinarmas.com/' },
@@ -382,7 +383,7 @@ export default function Sponser() {
             ))}
           </div>
           </div>
-          {/* Gold Placeholder : Do not remove 
+          {/* Gold */}
           <div style={{ marginBottom: 'clamp(20px, 3vw, 40px)' }}>
             <SectionLabel label="Gold Sponsors" color="#eab308" />
             <div
@@ -394,7 +395,7 @@ export default function Sponser() {
               ))}
             </div>
           </div>
-          */}
+          
            {/* Silver */}
           <div style={{ marginBottom: 'clamp(20px, 3vw, 40px)' }}>
             <SectionLabel label="Silver Sponsors" color="#94a3b8" />
